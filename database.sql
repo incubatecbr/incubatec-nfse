@@ -1,0 +1,15 @@
+CREATE TABLE `incubatec_nf`.`empresa` (
+  `cnpj_emp` INT NOT NULL,
+  `razao_social` VARCHAR(45) NOT NULL,
+  `inscricao_estadual` INT NOT NULL,
+  `endereco` VARCHAR(45) NOT NULL,
+  `bairro` VARCHAR(15) NOT NULL,
+  `municipio` VARCHAR(30) NOT NULL,
+  `cep` VARCHAR(9) NOT NULL,
+  `uf` VARCHAR(2) NOT NULL,
+  `nome_responsavel` VARCHAR(45) NOT NULL,
+  `email_responsavel` VARCHAR(45) NOT NULL,
+  `cargo_responsavel` VARCHAR(10) NOT NULL,
+  `tel_responsavel` VARCHAR(12) NOT NULL,
+  PRIMARY KEY (`cnpj_emp`),
+  UNIQUE INDEX `cnpj_UNIQUE` (`cnpj_emp` ASC));
