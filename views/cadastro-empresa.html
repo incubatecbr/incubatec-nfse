@@ -1,0 +1,91 @@
+<form id="form-empresa">
+    <div class="form-row">
+        <div class="form-group col-md-4">
+            <label for="">Razão Social:</label>
+            <input type="text" class="form-control" name="razao_social" required>
+        </div>
+    </div>
+    <div class="form-row">
+        <div class="form-group col-md-2">
+            <label for="">Inscrição Estadual:</label>
+            <input type="text" class="form-control" id="insc_estadual" name="insc_estadual" required>
+        </div>
+        <div class="form-group col-md-2">
+            <label for="">CNPJ:</label>
+            <input type="text" class="form-control" id="cnpj" name="cnpj" required>
+        </div>
+    </div>
+    <div class="form-row">
+        <div class="form-group col-md-4">
+            <label for="">Endereço:</label>
+            <input type="text" class="form-control" name="endereco" required>
+        </div>
+    </div>
+    <div class="form-row">
+        <div class="form-group col-md-2">
+            <label for="">Bairro:</label>
+            <input type="text" class="form-control" name="bairro" required>
+        </div>
+        <div class="form-group col-md-2">
+            <label for="">Municipio:</label>
+            <input type="text" class="form-control" name="municipio" required>
+        </div>
+    </div>
+    <div class="form-row">
+        <div class="form-group col-md-2">
+            <label for="">CEP:</label>
+            <input type="text" class="form-control" id="cep" name="cep" required>
+        </div>
+        <div class="form-group col-md-1">
+            <label for="">UF:</label>
+            <input type="text" class="form-control" name="uf" required>
+        </div>
+    </div>
+    <hr>
+    <h3>Dados para gerar arquivo idenfiticação</h3>
+    <div class="form-row">
+        <div class="form-group col-md-4">
+            <label for="">Nome:</label>
+            <input type="text" class="form-control" name="nome_responsavel" required>
+        </div>
+    </div>
+    <div class="form-row">
+        <div class="form-group col-md-4">
+            <label for="">Email:</label>
+            <input type="email" class="form-control" name="email_responsavel" required>
+        </div>
+    </div>
+    <div class="form-row">
+        <div class="form-group col-md-2">
+            <label for="">Cargo:</label>
+            <input type="text" class="form-control" name="cargo_responsavel" required>
+        </div>
+        <div class="form-group col-md-2">
+            <label for="">Telefone:</label>
+            <input type="text" class="form-control tel" name="tel_responsavel" required>
+        </div>
+    </div>
+    <div class="form-row">
+        <div class="form-group col-md-3 mx-auto">
+            <button type="button" id="btn_edit_empresa" class="btn btn-lg btn-warning">Editar</button>
+            <button type="button" id="bnt_salvar" class="btn btn-lg btn-success">Salvar</button>
+        </div>
+    </div>
+</form>
+<script>
+$(document).ready(function () {
+    $.ajax({
+        type: "POST",
+        url: "",
+        data: {mod: 'Empresa', action: 'teste' },
+        error: function () { alert("Não foi possível atender a solicitação."); },
+        success: function (data, textStatus, jqXHR) {
+            console.log(data);
+        }
+
+    });
+
+
+
+});
+</script>

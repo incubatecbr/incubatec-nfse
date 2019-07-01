@@ -1,5 +1,5 @@
 <?php
-    $APP_PATH['root'] = $_SERVER['DOCUMENT_ROOT'] . '/incubatecnf/';
+    $APP_PATH['root'] = $_SERVER['DOCUMENT_ROOT'] . '/Incubatecnf/';
     $APP_PATH['sys'] = $APP_PATH['root'] . 'sys/';
     $APP_PATH['view'] = $APP_PATH['root'] . 'views/';
 
