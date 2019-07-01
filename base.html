@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <meta name="description" content="sistema para cadastrar e gerar nota fiscal n 21/22.">
+    <meta name="author" content="incubatec">
+
+    <title>Incubatec NF 21/22.</title>
+    <link rel="stylesheet" href="assets/css/bootstrap.min.css">
+    <link rel="stylesheet" href="assets/css/jquery-confirm.min.css">
+    <link rel="stylesheet" href="assets/css/main.css">
+    
+</head>
+
+<body>
+    <nav class="navbar navbar-dark fixed-top bg-dark d-flex justify-content-center p-0 shadow">
+        <a class="navbar-brand col-sm-3 col-md-2 mr-0" href="#">Incubatec</a>
+    </nav>
+    
+    <div class="container-fluid">
+        <div class="row">
+            <nav class="col-md-2 d-none d-md-block bg-light sidebar">
+                <div class="sidebar-sticky">
+                    <h6 class="sidebar-heading d-flex justify-content-between align-items-center px-3 mt-4 mb-1 text-muted">
+                        <span>Cadastro</span>
+                    </h6>
+                    <ul class="nav flex-column" id="menu">
+                        <li class="nav-item pointer">
+                            <a class="nav-link" data-menu="cadastro-empresa">Empresa</a>
+                        </li>
+                        <li class="nav-item pointer">
+                            <a class="nav-link" data-menu="cadastro-cliente">Cliente</a>
+                        </li>
+                    </ul>
+                </div>
+            </nav>
+            <main role="main" class="col-md-9 ml-sm-auto col-lg-10 px-4">
+                <div
+                    class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+                    <h1 class="h2" id="title-page"></h1>
+                </div>
+                <div id="content">
+                </div>
+            </main>
+        </div>
+    </div>
+    <script src="assets/js/jquery-3.4.1.min.js"></script>
+    <script src="assets/js/jquery.mask.js"></script>
+    <script src="assets/js/jquery-confirm.min.js"></script>
+    <script src="assets/js/main.js"></script>
+</body>
+
+</html>
