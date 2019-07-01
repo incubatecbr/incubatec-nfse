@@ -77,10 +77,13 @@ $(document).ready(function () {
     $.ajax({
         type: "POST",
         url: "",
-        data: {mod: 'Empresa', action: 'teste' },
+        data: {mod: 'Empresa', action: 'getCompanyData' },
         error: function () { alert("Não foi possível atender a solicitação."); },
         success: function (data, textStatus, jqXHR) {
-            console.log(data);
+            if(data != false){
+                $("#form-empresa :input").prop("disabled", true);//deixa todos inputs desativados caso exista dados no db.
+                
+            }
         }
 
     });
