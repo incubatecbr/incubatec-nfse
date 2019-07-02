@@ -7,7 +7,7 @@
     
     if(isset($_POST['action']) && !empty($_POST['action'])  ){
 
-        $ctrl_name = ucfirst($_POST['mod']);
+        $ctrl_name = ucfirst($_POST['class']);
         if(class_exists($ctrl_name)){
             $_controller = new $ctrl_name();
             $_response = $_controller->init();

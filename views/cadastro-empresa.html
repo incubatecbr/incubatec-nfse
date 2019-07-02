@@ -16,15 +16,19 @@
         </div>
     </div>
     <div class="form-row">
-        <div class="form-group col-md-4">
+        <div class="form-group col-md-3">
             <label for="">Endereço:</label>
             <input type="text" class="form-control" name="endereco" required>
+        </div>
+        <div class="form-group col-md-1">
+            <label for="">Nº:</label>
+            <input type="text" class="form-control" id="numero" name="numero" required>
         </div>
     </div>
     <div class="form-row">
         <div class="form-group col-md-2">
             <label for="">Bairro:</label>
-            <input type="text" class="form-control" name="bairro" required>
+            <input type="text" class="form-control" id="numero" name="bairro" required>
         </div>
         <div class="form-group col-md-2">
             <label for="">Municipio:</label>
@@ -38,7 +42,9 @@
         </div>
         <div class="form-group col-md-1">
             <label for="">UF:</label>
-            <input type="text" class="form-control" name="uf" required>
+            <select class="custom-select" id="sigla-uf" name="uf" required>
+                <option value="">...</option>
+            </select>
         </div>
     </div>
     <hr>
@@ -68,27 +74,68 @@
     <div class="form-row">
         <div class="form-group col-md-3 mx-auto">
             <button type="button" id="btn_edit_empresa" class="btn btn-lg btn-warning">Editar</button>
-            <button type="button" id="bnt_salvar" class="btn btn-lg btn-success">Salvar</button>
+            <button type="button" id="btn_salvar" class="btn btn-lg btn-success">Salvar</button>
         </div>
     </div>
 </form>
 <script>
-$(document).ready(function () {
-    $.ajax({
-        type: "POST",
-        url: "",
-        data: {mod: 'Empresa', action: 'getCompanyData' },
-        error: function () { alert("Não foi possível atender a solicitação."); },
-        success: function (data, textStatus, jqXHR) {
-            if(data != false){
-                $("#form-empresa :input").prop("disabled", true);//deixa todos inputs desativados caso exista dados no db.
-                
-            }
+    $(document).ready(function () {
+        //Preenche select de estado com as siglas.
+        for(let s in estadosUF){
+            $("#sigla-uf").append(`<option value='${estadosUF[s].sigla}'> ${estadosUF[s].sigla} </option>`);
         }
 
+        $.ajax({
+            type: "POST",
+            url: "",
+            data: {class: 'Empresa', action: 'getCompanyData'},
+            error: function () { alert("Não foi possível atender a solicitação."); },
+            success: function (data, textStatus, jqXHR) {
+                if (data != false) {
+                    $("#form-empresa :input").prop("disabled",true); //deixa todos inputs desativados caso exista dados no db.
+                }else{
+
+                }
+            }
+
+        });
+        //Retira classe quando receber focus
+        $("#form-empresa input, select").blur(function(){
+            $(this).removeClass("inp-error");
+        });
+
+        
+        //Button Salvar
+        $("#btn_salvar").on("click", function () {
+            let err = 0;
+            $("#form-empresa input, select").each(function () {//Verifica se existe campos não preenchidos.
+                if ($(this).val() == "") {
+                    err++;
+                    $(this).addClass("inp-error");
+                }
+            });
+                if(err > 0){//Exibe um alert se hover campos não preenchidos
+                    $.alert({ type: 'red', title: 'Atenção!', content: 'Por favor preencha os campos marcados!', });
+                }else{//Envia para o servidor.
+                    let arrayF = $('#form-empresa').serializeArray();
+                    $.ajax({
+                        type: "POST",
+                        url: "",
+                        data: {class: 'Empresa', action: 'saveCompany', data: arrayF },
+                        error: function () { alert("Não foi possível cadastrar empresa."); },
+                        success: function (data, textStatus, jqXHR) {
+                            console.log(data);
+                        }   
+
+                    });
+                }                
+        });
+
+        //Button Edit
+        $("#btn_edit_empresa").on("click", function () {
+            alert('Button edit...');
+        });
+
+
     });
-
-
-
-});
 </script>

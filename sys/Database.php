@@ -24,8 +24,8 @@ class Database
      * Função para fechar a conexao com o db
      * @param $conn variavel de connection
      */
-    public function _close($conn){
-        $conn->close();
+    public function _close(){
+        $this->conn->close();
     }
 
 }

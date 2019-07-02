@@ -20,6 +20,11 @@ abstract class IncubaMain {
         }
     }
 
+    /**
+     * Função para pecorrer o array e remover pontos, traços, parenteses.
+     * @param $array
+     * @return $newArray Formatado.
+     */
     public function formatDataArray($array){
         $newArray = array();
         for ($i=0; $i < count($array); $i++) { 
@@ -28,10 +33,16 @@ abstract class IncubaMain {
         return $newArray;
     }
 
+    /**
+     * Função para remover pontos, virgulas, barras, traços, parenteses e acentuação.
+     * @param $string
+     * @return $string formadata
+     */
     public function removePoints($string){
         $remove = array (".",",","/","(",")","-");
         $res = str_replace($remove, "", $string);
-        return $res;
+        $removeSC = preg_replace( '/[`^~\'"]/', null, iconv( 'UTF-8', 'ASCII//TRANSLIT', $res ) );
+        return $removeSC;
     }
 
 
