@@ -3,10 +3,7 @@
 abstract class IncubaMain {
 
     public function __construct() {
-        // $authentication = new ConnectDB();
-        // $this->conn = $authentication->token();
         $database = new Database();
-
     }
 
     public function init() {
@@ -42,7 +39,7 @@ abstract class IncubaMain {
         $remove = array (".",",","/","(",")","-");
         $res = str_replace($remove, "", $string);
         $removeSC = preg_replace( '/[`^~\'"]/', null, iconv( 'UTF-8', 'ASCII//TRANSLIT', $res ) );
-        return $removeSC;
+        return $removeSC; //Retorna os dados com UPPERCASE
     }
 
 

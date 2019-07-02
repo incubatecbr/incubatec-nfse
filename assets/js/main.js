@@ -60,7 +60,7 @@ $("#menu li").click(function () {
         $('#insc_estadual').mask("9999999999");
         $('#cep').mask("99999-999");
         $('.tel').mask("(99)99999-9999");
-        $('#numero').mask("999999");
+        $('#numero').mask("99999");
         //      
     });
 });
