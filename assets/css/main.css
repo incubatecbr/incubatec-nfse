@@ -118,3 +118,21 @@ label{
 #title-page{
   text-transform: capitalize;
 }
+
+/* Loader Cep */
+@keyframes spin {
+  to { transform: rotate(360deg);}
+}
+
+.spinner-loader {
+  display: none;
+  position: fixed; /* Stay in place */
+  z-index: 1;
+
+  border: 8px solid rgba(0, 0, 0, 0.1);
+  border-left-color: #22a6b3;
+  border-radius: 50%;
+  width: 100px;
+  height: 100px;
+  animation: spin 1s linear infinite;
+}

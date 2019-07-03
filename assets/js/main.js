@@ -51,7 +51,7 @@ $("#menu li").click(function () {
     page = view + page + '.html';
     //carrega as paginas
     $("#content").load(page, function (response, status, xhr) {
-                if (status == "error") {//Se não encontrar pagina na pasta VIEW.
+        if (status == "error") {//Se não encontrar pagina na pasta VIEW.
             var msg = "Desculpe, mas houve um erro: ";
             $("#content").html(msg + xhr.status + " " + xhr.statusText);
         }

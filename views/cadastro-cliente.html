@@ -1,0 +1,72 @@
+<form id="form-cliente">
+    <div class="form-row">
+        <div class="form-group col-6">
+            <label for="">Nome completo:</label>
+            <input type="text" class="form-control" id="rz" name="razao_social" required>
+        </div>
+        <div class="form-group col-3">
+            <label for="">CPF/CNPJ:</label>
+            <input type="text" class="form-control" id="cnpj" name="cnpj" required>
+        </div>
+        <div class="form-group col-3">
+            <label for="">Inscrição Estadual:</label>
+            <input type="text" class="form-control" name="insc_estadual" required>
+        </div>
+
+    </div>
+    <div class="form-row">
+        <div class="form-group col-5">
+            <label for="">Logradouro:</label>
+            <input type="text" class="form-control" id="endereco" name="endereco" required>
+        </div>
+        <div class="form-group col-1">
+            <label for="">Nº:</label>
+            <input type="text" class="form-control" id="numero" name="numero" required>
+        </div>
+        <div class="form-group col-3">
+            <label for="">Completo:</label>
+            <input type="text" class="form-control" id="complemento" name="complemento" required>
+        </div>
+        <div class="form-group col-3">
+            <label for="">Bairro:</label>
+            <input type="text" class="form-control" id="bairro" name="bairro" required>
+        </div>
+
+    </div>
+    <div id="spinner-loader" class="mx-auto my-auto spinner-loader"></div>
+    <div class="form-row">
+        <div class="form-group col-2">
+            <label for="">CEP:</label>
+            <input type="text" class="form-control" id="cep" name="cep" required>
+        </div>
+        <div class="form-group col-2">
+            <label for="">Estado(UF):</label>
+            <select class="custom-select" id="uf" name="uf" required>
+                <option value="">...</option>
+            </select>
+        </div>
+        <div class="form-group col-3">
+            <label for="">Municipio:</label>
+            <input type="text" class="form-control" id="municipio" name="municipio" required>
+        </div>
+        <div class="form-group col-2">
+            <label for="">Telefone:</label>
+            <input type="text" class="form-control" id="" name="" required>
+        </div>
+    </div>
+    
+    <div class="form-row">
+        <div class="form-group col-md-3 mx-auto" id="divButtons">
+            <button type="button" id="btn_salvar" class="btn btn-lg btn-success">Salvar</button>
+        </div>
+    </div>
+</form>
+<script>
+    $(document).ready(function(){
+        $("#spinner-loader").hide();
+    });
+    $("#cep").on("blur", function(){
+        //alert('blurrrr');
+        $("#spinner-loader").show();
+    });
+</script>
