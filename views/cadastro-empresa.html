@@ -84,7 +84,7 @@
             type: "POST",
             url: "",
             data: {class: 'Empresa', action: 'getCompanyData'},
-            error: function () { alert("Não foi possível atender a solicitação."); },
+            error: function () { alert("Não foi possível atender sua requisição."); },
             success: function (data, textStatus, jqXHR) {
                 if (data != false) {
                     $("#form-empresa :input").not("button").prop("disabled",true); //deixa todos inputs desativados caso exista dados no db.
@@ -130,7 +130,7 @@
                         type: "POST",
                         url: "",
                         data: {class: 'Empresa', action: 'saveCompany', data: arrayF },
-                        error: function () { alert("Não foi possível cadastrar empresa."); },
+                        error: function () { alert("Não foi possível atender sua requisição."); },
                         success: function (data, textStatus, jqXHR){
                             if( data === true){
                                 $.alert({ type: 'green', title: 'Empresa cadastrada!', content: 'Tudo certo. Se precisar alterar clique no botão alterar!', });
@@ -154,7 +154,7 @@
                         type: "POST",
                         url: "",
                         data: {class: 'Empresa', action: 'updateCompany', data: arrayF },
-                        error: function () { alert("Não foi possível cadastrar empresa."); },
+                        error: function () { alert("Não foi possível atender sua requisição."); },
                         success: function (data, textStatus, jqXHR){
                             if( data === true){
                                 $.alert({ type: 'green', title: 'Sucesso!', content: 'Os dados empresarias foram atualizados!', });

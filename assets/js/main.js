@@ -56,12 +56,22 @@ $("#menu li").click(function () {
             $("#content").html(msg + xhr.status + " " + xhr.statusText);
         }
         //Mascaras nos inputs para todas as paginas
+        $('#cpf_cnpj').mask('00.000.000/0000-00');
         $('#cnpj').mask('00.000.000/0000-00');
         $('#insc_estadual').mask("9999999999");
         $('#cep').mask("99999-999");
         $('.tel').mask("(99)99999-9999");
         $('#numero').mask("99999");
-        //      
+        $('#tel_contato').mask("(99)9 9999-9999");
+        //mascara cpf/cnpj no mesmo input
+        var options = {
+            onKeyPress: function (cpf, ev, el, op) {
+                var masks = ['000.000.000-000', '00.000.000/0000-00'];
+                $('#cpf_cnpj').mask((cpf.length > 14) ? masks[1] : masks[0], op);
+            }
+        }
+        $('#cpf_cnpj').length > 11 ? $('#cpf_cnpj').mask('00.000.000/0000-00', options) : $('#cpf_cnpj').mask('000.000.000-00#', options); 
+        //     
     });
 });
 

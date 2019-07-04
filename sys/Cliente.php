@@ -6,8 +6,7 @@ class Cliente extends IncubaMain
     /**
      * Construtor para instanciar a classe banco de dados
      */
-    public function __construct()
-    {
+    public function __construct(){
         $db = new Database();
         $this->conn = $db->_connect();
     }
@@ -30,5 +29,65 @@ class Cliente extends IncubaMain
         }
         return $json;
     }
+
+    public function newClient(){
+        $rz = $_POST['data'][0]['value'];
+        $data = $this->_format($_POST['data']);
+        $exist = $this->getClient( $data['cpf_cnpj'] );
+        if($exist == true){//existe cliente cadastro com esse cpf/cnpj.
+            return "EXISTE!";
+        }else{//não existe.
+            $numero = intval($data['numero']);
+            $sql = "INSERT INTO clientes(`razao_social`,`cpf_cnpj`, `inscricao_estadual`, `logradouro`, `numero`, `complemento`, `bairro`, `municipio`, `cod_muni_ibge`, `uf`, `cep`, `telefone`) VALUES( '{$rz}', '{$data["cpf_cnpj"]}', '{$data["insc_estadual"]}', '{$data["endereco"]}', $numero, '{$data["complemento"]}', '{$data["bairro"]}', '{$data["municipio"]}', '{$data["cod_municipio_ibge"]}', '{$data["uf"]}', '{$data["cep"]}', '{$data["tel_contato"]}' )";
+            if($this->conn->query($sql) === TRUE) {
+                return true;
+            }else{
+                return "Error {$this->conn->error}";
+            }
+            $this->conn->close();//fecha conexao com db.
+            
+        }
+        
+    }
+
+    /**
+     * Função responsavel por verificar se existe cliente com base no cpf/cnpj.
+     * @param $cpf_cnpj
+     * @return bool
+     */
+    public function getClient($cpf_cnpj){
+        $sql = "SELECT * FROM clientes WHERE cpf_cnpj = {$cpf_cnpj}";
+        $result = $this->conn->query($sql);
+        if ($result->num_rows > 0) {
+            return true;
+        }else{
+            return false;
+        }
+        $this->conn->close();//fecha conexao com db.
+    }
+    
+    /**
+     * Função auxiliar para formatar data.
+     * @param [array] $arr
+     * @return void
+     */
+    public function _format($arr){
+        $newArray = array();
+        for ($i=0; $i < count($arr); $i++) { 
+            $newArray[ $arr[$i]['name'] ] = $this->_remove($arr[$i]['value']);
+        }
+        return $newArray;
+    }
+    /**
+     * Função auxiliar para remover pontos e barra.
+     * @param [string] $s
+     * @return void
+     */
+    public function _remove($s){
+        $remove = array (".",",","/","(",")","-");
+        $r = str_replace($remove, "", $s);
+        return $r;
+    }
+
 
 }

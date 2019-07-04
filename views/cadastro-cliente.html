@@ -1,81 +1,79 @@
 <form id="form-cliente">
     <div class="form-row">
         <div class="form-group col-6">
-            <label for="">Nome completo:</label>
-            <input type="text" class="form-control" id="rz" name="razao_social" required>
+            <label for="">Razão Social:</label>
+            <input type="text" class="form-control" id="rz" name="razao_social" maxlength="35">
         </div>
         <div class="form-group col-3">
             <label for="">CPF/CNPJ:</label>
-            <input type="text" class="form-control" id="cnpj" name="cnpj" required>
+            <input type="text" class="form-control" id="cpf_cnpj" name="cpf_cnpj">
         </div>
         <div class="form-group col-3">
             <label for="">Inscrição Estadual:</label>
-            <input type="text" class="form-control" name="insc_estadual" required>
+            <input type="text" class="form-control" name="insc_estadual" maxlength="14">
         </div>
 
     </div>
     <div class="form-row">
         <div class="form-group col-5">
             <label for="">Logradouro:</label>
-            <input type="text" class="form-control" id="endereco" name="endereco" required>
+            <input type="text" class="form-control" id="endereco" name="endereco" maxlength="45">
         </div>
         <div class="form-group col-1">
             <label for="">Nº:</label>
-            <input type="text" class="form-control" id="numero" name="numero" required>
+            <input type="text" class="form-control" id="numero" name="numero" required maxlength="5">
         </div>
         <div class="form-group col-3">
-            <label for="">Completo:</label>
-            <input type="text" class="form-control" id="complemento" name="complemento" required>
+            <label for="">Complementoto:</label>
+            <input type="text" class="form-control" id="complemento" name="complemento" maxlength="15">
         </div>
         <div class="form-group col-3">
             <label for="">Bairro:</label>
-            <input type="text" class="form-control" id="bairro" name="bairro" required>
+            <input type="text" class="form-control" id="bairro" name="bairro" maxlength="15">
         </div>
 
     </div>
+    <!-- spinner loader -->
     <div class="divLoader" id="spinner-loader" style="display:none;">
         <div class="mx-auto my-auto spinner-loader"></div>
     </div>
-
-
+    <!-- spinner loader -->
     <div class="form-row">
         <div class="form-group col-2">
             <label for="">CEP:</label>
-            <input type="text" class="form-control" id="cep" name="cep" required>
+            <input type="text" class="form-control" id="cep" name="cep">
         </div>
         <div class="form-group col-2">
             <label for="">Estado(UF):</label>
-            <input type="text" class="form-control" id="uf" name="uf" required disabled>
+            <input type="text" class="form-control inp-disabled" id="uf" name="uf">
         </div>
         <div class="form-group col-3">
             <label for="">Municipio:</label>
-            <input type="text" class="form-control" id="municipio" name="municipio" required disabled>
+            <input type="text" class="form-control inp-disabled" id="municipio" name="municipio">
         </div>
         <div class="form-group col-2">
             <label for="">Cód. Municipio IBGE:</label>
-            <input type="text" class="form-control" id="cod_ibge_m" name="cod_municipio_ibge" disabled>
+            <input type="text" class="form-control inp-disabled" id="cod_ibge_m" name="cod_municipio_ibge">
         </div>
         <div class="form-group col-3">
             <label for="">Telefone:</label>
-            <input type="text" class="form-control" id="" name="" required>
+            <input type="text" class="form-control" id="tel_contato" name="tel_contato">
         </div>
     </div>
 
     <div class="form-row">
         <div class="form-group col-md-3 mx-auto" id="divButtons">
-            <button type="button" id="btn_salvar" class="btn btn-lg btn-success">Salvar</button>
+            <button type="button" id="btn_save" class="btn btn-lg btn-success">Salvar</button>
         </div>
     </div>
 </form>
 <script>
-    $(document).ready(function () {
-
-    });
+    //Evento disparado quando campo perde o foco.
     $("#cep").on("blur", function () {
         let cep = $("#cep").val();
         if( cep == "" || cep.length < 9 ){
             $(this).addClass("inp-error");
-            alert('digite o cep');
+            //alert('digite o cep');
             $.alert({ type: 'red', title: 'Atenção!', content: 'CEP Inválido, informe um CEP valido!', });
         }else{
             $(this).removeClass("inp-error");
@@ -83,11 +81,10 @@
                 type: "POST",
                 url: "",
                 data: {class: 'Cliente', action: 'getAddressData', data: cep},
-                error: function () {alert("."); },
+                error: function () {alert("Não foi possível atender sua requisição."); },
                 beforeSend: function(){ $("#spinner-loader").show(); },
                 success: function (data, textStatus, jqXHR) {
                     $("#spinner-loader").hide();
-                    //console.log(data);
                     if(data === false){
                         $.alert({ type: 'red', title: 'Atenção!', content: 'CEP Inválido, informe um CEP valido!', });
                     }
@@ -99,6 +96,45 @@
             });
         }
     });
+
+    //Retira classe quando receber focus
+    $("#form-cliente input").not(".inp-disabled").focus(function(){
+            $(this).removeClass("inp-error");
+    });
+
+    //Envia requisição para inserir novo usuario..
+    $("#btn_save").on("click", function(){
+        let err = 0;
+        $("#form-cliente input").not(".inp-disabled").each(function () {//Verifica se existe campos não preenchidos.
+            if ($(this).val() == "") {
+                err++;
+                $(this).addClass("inp-error");
+            }
+        });
+        if(err > 0){
+            $.alert({ type: 'red', title: 'Atenção!', content: 'Preencha todos os campos!', });
+        }else{
+            let arrayClient = $('#form-cliente input').serializeArray();
+            $.ajax({
+                type: "POST",
+                url: "",
+                data: {class: 'Cliente', action: 'newClient', data: arrayClient},
+                error: function () { alert("Não foi possível atender sua requisição."); },
+                success: function (data, textStatus, jqXHR) {
+                    if(data === true){
+                        $.alert({ type: 'green', title: 'Sucesso!', content: 'Cliente cadastrado!', });
+                    }else{
+                        if(data.indexOf("EXISTE") != -1){
+                            $.alert({ type: 'red', title: 'Atenção!', content: 'Já existe registro com esse CPF/CNPJ!', });
+                        }
+                    }
+                    $("#form-cliente").trigger('reset');
+                }
+            });
+        }
+    });
+
+
     
     
 </script>
