@@ -33,7 +33,11 @@
         </div>
 
     </div>
-    <div id="spinner-loader" class="mx-auto my-auto spinner-loader"></div>
+    <div class="divLoader" id="spinner-loader" style="display:none;">
+        <div class="mx-auto my-auto spinner-loader"></div>
+    </div>
+
+
     <div class="form-row">
         <div class="form-group col-2">
             <label for="">CEP:</label>
@@ -41,20 +45,22 @@
         </div>
         <div class="form-group col-2">
             <label for="">Estado(UF):</label>
-            <select class="custom-select" id="uf" name="uf" required>
-                <option value="">...</option>
-            </select>
+            <input type="text" class="form-control" id="uf" name="uf" required disabled>
         </div>
         <div class="form-group col-3">
             <label for="">Municipio:</label>
-            <input type="text" class="form-control" id="municipio" name="municipio" required>
+            <input type="text" class="form-control" id="municipio" name="municipio" required disabled>
         </div>
         <div class="form-group col-2">
+            <label for="">Cód. Municipio IBGE:</label>
+            <input type="text" class="form-control" id="cod_ibge_m" name="cod_municipio_ibge" disabled>
+        </div>
+        <div class="form-group col-3">
             <label for="">Telefone:</label>
             <input type="text" class="form-control" id="" name="" required>
         </div>
     </div>
-    
+
     <div class="form-row">
         <div class="form-group col-md-3 mx-auto" id="divButtons">
             <button type="button" id="btn_salvar" class="btn btn-lg btn-success">Salvar</button>
@@ -62,11 +68,37 @@
     </div>
 </form>
 <script>
-    $(document).ready(function(){
-        $("#spinner-loader").hide();
+    $(document).ready(function () {
+
     });
-    $("#cep").on("blur", function(){
-        //alert('blurrrr');
-        $("#spinner-loader").show();
+    $("#cep").on("blur", function () {
+        let cep = $("#cep").val();
+        if( cep == "" || cep.length < 9 ){
+            $(this).addClass("inp-error");
+            alert('digite o cep');
+            $.alert({ type: 'red', title: 'Atenção!', content: 'CEP Inválido, informe um CEP valido!', });
+        }else{
+            $(this).removeClass("inp-error");
+            $.ajax({
+                type: "POST",
+                url: "",
+                data: {class: 'Cliente', action: 'getAddressData', data: cep},
+                error: function () {alert("."); },
+                beforeSend: function(){ $("#spinner-loader").show(); },
+                success: function (data, textStatus, jqXHR) {
+                    $("#spinner-loader").hide();
+                    //console.log(data);
+                    if(data === false){
+                        $.alert({ type: 'red', title: 'Atenção!', content: 'CEP Inválido, informe um CEP valido!', });
+                    }
+                    $("#municipio").val(data.localidade);
+                    $("#uf").val(data.uf);
+                    $("#cod_ibge_m").val(data.ibge);
+                    
+                }
+            });
+        }
     });
+    
+    
 </script>
