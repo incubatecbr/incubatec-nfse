@@ -10,6 +10,8 @@ class Nota extends IncubaMain{
         $this->conn = $db->_connect();
     }
 
+    
+
  
 }
 

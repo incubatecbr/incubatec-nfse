@@ -1,8 +1,10 @@
+<!-- css table --><link rel="stylesheet" href="https://cdn.datatables.net/1.10.19/css/dataTables.bootstrap.min.css"><!-- css table -->
+
 <form id="form-nf">
     <div class="form-row">
         <div class="form-group col-2">
             <label for="">CPF/CNPJ Cliente:</label>
-            <input type="text" class="form-control" id="cpf_cnpj" name="cpf_cnpj" autofocus>
+            <input type="text" class="form-control" id="cpf_cnpj" name="cpf_cnpj">
         </div>
         <div class="form-group col-4">
             <label for="">Razão Social:</label>
@@ -16,11 +18,11 @@
     <div class="form-row">
         <div class="form-group col-2">
             <label for="">Data de emissão:</label>
-            <input type="text" class="form-control" id="" name="">
+            <input type="text" class="form-control" id="dt_emissao" name="dt_emissao">
         </div>
         <div class="form-group col-2">
             <label for="">Data de prestação:</label>
-            <input type="text" class="form-control" id="" name="">
+            <input type="text" class="form-control" id="dt_prestacao" name="dt_prestacao">
         </div>
         <div class="form-group col-2">
             <label for="">Situação do documento:</label>
@@ -58,11 +60,11 @@
         </div>
         <div class="form-group col-2">
             <label for="">Quantidade Faturada:</label>
-            <input type="text" class="form-control" name="qtn_faturada_servico" maxlength="11">
+            <input type="text" class="form-control" name="qtn_faturada_servico" id="qtn_faturada_servico" maxlength="11">
         </div>
         <div class="form-group col-2">
             <label for="">Base Cálculo ICMS:</label>
-            <input type="text" class="form-control" name="bc_icms_servico" maxlength="11">
+            <input type="text" class="form-control" id="bc_icms_servico" name="bc_icms_servico" maxlength="11">
         </div>
         <div class="form-group col-2">
             <button type="button" id="btnAddService" class="btn btn-info mt-4">Inserir</button>
@@ -71,13 +73,15 @@
 </form>
 
 <table id="tb_item" class="table table-sm table-bordered">
-    <thead class="thead-dark">
+    <thead class="thead">
         <tr>
-            <!-- <th scope="col" style="width:2%;"><input type="checkbox"></th> -->
+            <th scope="col">cod_service</th>
             <th scope="col">Serviços</th>
-            <th scope="col">Unidade</th>
             <th scope="col">R$</th>
-            <th scope="col">Action</th>
+            <th scope="col">Unidade</th>
+            <th scope="col">Qnt</th>
+            <th scope="col">ICMS</th>
+            <th scope="col">Ação</th>
         </tr>
     </thead>
     <tbody>
@@ -91,22 +95,24 @@
     </div>
 <hr>
 
+
 <script>
     //masks inputs
-    $("#total_service").mask("#.##0,00", {
-        reverse: true
-    });
+    $("#total_service").mask("#.##0,00", {reverse: true});
+    $("#qtn_faturada_servico").mask("#,000");
+    $("#bc_icms_servico").mask("#.##0,00", {reverse: true});
+    $("#dt_emissao").mask("00/00/0000");
+    $("#dt_prestacao").mask("00/00/0000");
     //masks inputs
 
-    function deleteItem(ctl) {
-        $(ctl).parents("tr").remove();
-    }
 
     function addItem(name, uni, money) {
         //console.log(name);console.log(uni);console.log(money);
-        $("#tb_item tbody").append("<tr><td>"+name+"</<td><td>"+uni+"</td><td>"+money+"</td><td><button tpye='button' class='btn-danger' onclick='deleteItem(this);'>X</button></td>  <tr>");
+        $("#tb_item tbody").append("<tr><td>"+name+"</<td><td>"+uni+"</td><td>"+money+"</td><td><button tpye='button' class='btn-danger delRow' onclick='deleteItem(this);'>X</button></td>  <tr>");
     }
     $(document).ready(function () {
+        
+        const table = $("#tb_item").DataTable({"paging":false, "ordering": false,"info": false});
         $("#cpf_cnpj").on("blur", function () {
             let len = $(this).val();
             if ( len.length < 14 ){
@@ -114,8 +120,8 @@
                 $(this).attr("autofocus");
                 $.alert({type: 'red',title: 'Atenção!',content: 'CPF Inválido!'});
             }
-           
         });
+
         //Retira classe quando receber focus
         $("#itemService input").focus(function () {
             $(this).removeClass("inp-error");
@@ -134,9 +140,28 @@
             if (err > 0) {
                 $.alert({type: 'red',title: 'Atenção!',content: 'Preencha todos os campos!'});
             } else {
-                addItem(arrayS[1]['value'], arrayS[3]['value'], arrayS[2]['value']);
+                $("#itemService").trigger('reset');
+                //addItem(arrayS[1]['value'], arrayS[3]['value'], arrayS[2]['value']);
+                table.row.add( [ arrayS[0]['value'], arrayS[1]['value'], arrayS[2]['value'], arrayS[3]['value'], arrayS[4]['value'], arrayS[5]['value'], "<button tpye='button' class='btn-danger'>EXCLUIR</button>"  ] ).draw( false );
             }
 
+        });
+        //Deleta linha da tabela apos clicado no botao excluir
+        $('#tb_item').on( 'click', 'button', function () {
+            table.row( $(this).parents('tr') ).remove().draw();
+        } );
+
+        $("#btn_save").on("click", function(){
+            
+            let data = table.rows().data();
+            console.log('Total de linhas'+data.length);
+            console.log(data[0][1]);
+            // let itensArray = []; 
+            // $("tbody tr").each(function(){
+            //     console.log( $(this).find('td').html() );
+            // });
+            //alert('clicou..');
+            //console.log(itensArray);
         });
     });
 </script>
