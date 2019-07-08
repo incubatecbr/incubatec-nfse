@@ -1,6 +1,10 @@
-<!-- css table --><link rel="stylesheet" href="https://cdn.datatables.net/1.10.19/css/dataTables.bootstrap.min.css"><!-- css table -->
+<!-- css table -->
+<link rel="stylesheet" href="assets/css/dataTables-bootstrap.min.css"><!-- css table -->
 
 <form id="form-nf">
+    <div class="alert alert-primary" role="alert">
+        Preencha o CPF/CNPJ de um cliente cadastrado no sistema.
+    </div>
     <div class="form-row">
         <div class="form-group col-2">
             <label for="">CPF/CNPJ Cliente:</label>
@@ -8,13 +12,18 @@
         </div>
         <div class="form-group col-4">
             <label for="">Razão Social:</label>
-            <input type="text" class="form-control" id="rz" name="razao_social" maxlength="35">
+            <input type="text" class="form-control" id="razao_social" name="razao_social" readonly>
         </div>
         <div class="form-group col-2">
             <label for="">Inscrição Estadual:</label>
-            <input type="text" class="form-control" name="insc_estadual" maxlength="14">
+            <input type="text" class="form-control" name="insc_estadual" id="insc_estadual" readonly>
         </div>
     </div>
+    <!-- spinner loader -->
+    <div class="divLoader" id="spinner-loader" style="display:none;">
+        <div class="mx-auto my-auto spinner-loader"></div>
+    </div>
+    <!-- spinner loader -->
     <div class="form-row">
         <div class="form-group col-2">
             <label for="">Data de emissão:</label>
@@ -26,7 +35,7 @@
         </div>
         <div class="form-group col-2">
             <label for="">Situação do documento:</label>
-            <select class="custom-select" name="">
+            <select class="custom-select" name="situacao_doc">
                 <option value="" selected>...</option>
                 <option value="N">Normal</option>
                 <option value="S">Cancelado</option>
@@ -36,7 +45,7 @@
 </form>
 <h5>Serviços</h5>
 <hr>
-<form id="itemService" action="POST">
+<form id="form-itemService" action="POST">
     <div class="form-row">
         <div class="form-group col-2">
             <label for="">Cód. Serviço:</label>
@@ -44,7 +53,7 @@
         </div>
         <div class="form-group col-4">
             <label for="">Descrição:</label>
-            <input type="text" class="form-control" id="" name="descricao_servico" maxlength="40">
+            <input type="text" class="form-control" id="descricao_servico" name="descricao_servico" maxlength="40">
         </div>
         <div class="form-group col-2">
             <label for="">Valor total R$:</label>
@@ -60,7 +69,8 @@
         </div>
         <div class="form-group col-2">
             <label for="">Quantidade Faturada:</label>
-            <input type="text" class="form-control" name="qtn_faturada_servico" id="qtn_faturada_servico" maxlength="11">
+            <input type="text" class="form-control" name="qtn_faturada_servico" id="qtn_faturada_servico"
+                maxlength="11">
         </div>
         <div class="form-group col-2">
             <label for="">Base Cálculo ICMS:</label>
@@ -89,18 +99,22 @@
 </table>
 
 <div class="form-row">
-        <div class="form-group col-md-3 mx-auto" id="divButtons">
-            <button type="button" id="btn_save" class="btn btn-warning">Concluir NF</button>
-        </div>
+    <div class="form-group col-md-3 mx-auto" id="divButtons">
+        <button type="button" id="btn_save" class="btn btn-warning">Concluir NF</button>
     </div>
+</div>
 <hr>
 
 
 <script>
     //masks inputs
-    $("#total_service").mask("#.##0,00", {reverse: true});
+    $("#total_service").mask("#.##0,00", {
+        reverse: true
+    });
     $("#qtn_faturada_servico").mask("#,000");
-    $("#bc_icms_servico").mask("#.##0,00", {reverse: true});
+    $("#bc_icms_servico").mask("#.##0,00", {
+        reverse: true
+    });
     $("#dt_emissao").mask("00/00/0000");
     $("#dt_prestacao").mask("00/00/0000");
     //masks inputs
@@ -108,53 +122,111 @@
 
     function addItem(name, uni, money) {
         //console.log(name);console.log(uni);console.log(money);
-        $("#tb_item tbody").append("<tr><td>"+name+"</<td><td>"+uni+"</td><td>"+money+"</td><td><button tpye='button' class='btn-danger delRow' onclick='deleteItem(this);'>X</button></td>  <tr>");
+        $("#tb_item tbody").append("<tr><td>" + name + "</<td><td>" + uni + "</td><td>" + money +
+            "</td><td><button tpye='button' class='btn-danger delRow' onclick='deleteItem(this);'>X</button></td>  <tr>"
+        );
     }
     $(document).ready(function () {
-        
-        const table = $("#tb_item").DataTable({"paging":false, "ordering": false,"info": false});
+
+        const table = $("#tb_item").DataTable({
+            "paging": false,
+            "ordering": false,
+            "info": false
+        });
         $("#cpf_cnpj").on("blur", function () {
-            let len = $(this).val();
-            if ( len.length < 14 ){
+            let cpf_cnpj = $(this).val();
+            if (cpf_cnpj.length < 14) {
                 $(this).val('');
                 $(this).attr("autofocus");
-                $.alert({type: 'red',title: 'Atenção!',content: 'CPF Inválido!'});
+                $.alert({
+                    type: 'red',
+                    title: 'Atenção!',
+                    content: 'CPF Inválido!'
+                });
+            } else if (cpf_cnpj.length > 14 && cpf_cnpj.length < 18) {
+                $.alert({
+                    type: 'red',
+                    title: 'Atenção!',
+                    content: 'CNPJ Inválido!'
+                });
+            } else {
+                //busca informações do cliente
+                $.ajax({
+                    type: "POST",
+                    url: "",
+                    data: {
+                        class: 'Cliente',
+                        action: 'getClientByCpfCnpj',
+                        data: cpf_cnpj
+                    },
+                    error: function () {
+                        alert("Não foi possível atender sua requisição.");
+                    },
+                    beforeSend: function () {
+                        $("#spinner-loader").show();
+                    },
+                    success: function (data, textStatus, jqXHR) {
+                        $("#spinner-loader").hide();
+                        if (data === false) {
+                            $.alert({
+                                type: 'red',
+                                title: 'Atenção!',
+                                content: 'O CPF/CNPJ informado não está associado a um cliente, por favor cadastre o cliente.',
+                            });
+                            $("#form-cliente").trigger('reset');
+                        }
+                        //console.log(data);
+                        $("#razao_social").val(data.razao_social);
+                        $("#insc_estadual").val(data.inscricao_estadual);
+                        // $("#cod_ibge_m").val(data.ibge);
+
+                    }
+                });
+
             }
         });
 
         //Retira classe quando receber focus
-        $("#itemService input").focus(function () {
+        $("#form-itemService input").focus(function () {
             $(this).removeClass("inp-error");
         });
 
         $("#btnAddService").on("click", function () {
             let err = 0;
-            //var arrayS = $('#itemService').serialize();
-            var arrayS = $('#itemService').serializeArray();
-            $("#itemService input").each(function () {
+            //var arrayS = $('#form-itemService').serialize();
+            var arrayS = $('#form-itemService').serializeArray();
+            $("#form-itemService input").each(function () {
                 if ($(this).val() == "") {
                     err++;
                     $(this).addClass("inp-error");
                 }
             });
             if (err > 0) {
-                $.alert({type: 'red',title: 'Atenção!',content: 'Preencha todos os campos!'});
+                $.alert({
+                    type: 'red',
+                    title: 'Atenção!',
+                    content: 'Preencha todos os campos!'
+                });
             } else {
-                $("#itemService").trigger('reset');
+                $("#form-itemService").trigger('reset');
                 //addItem(arrayS[1]['value'], arrayS[3]['value'], arrayS[2]['value']);
-                table.row.add( [ arrayS[0]['value'], arrayS[1]['value'], arrayS[2]['value'], arrayS[3]['value'], arrayS[4]['value'], arrayS[5]['value'], "<button tpye='button' class='btn-danger'>EXCLUIR</button>"  ] ).draw( false );
+                table.row.add([arrayS[0]['value'], arrayS[1]['value'], arrayS[2]['value'], arrayS[3][
+                        'value'
+                    ], arrayS[4]['value'], arrayS[5]['value'],
+                    "<button tpye='button' class='btn-danger'>EXCLUIR</button>"
+                ]).draw(false);
             }
 
         });
         //Deleta linha da tabela apos clicado no botao excluir
-        $('#tb_item').on( 'click', 'button', function () {
-            table.row( $(this).parents('tr') ).remove().draw();
-        } );
+        $('#tb_item').on('click', 'button', function () {
+            table.row($(this).parents('tr')).remove().draw();
+        });
 
-        $("#btn_save").on("click", function(){
-            
+        $("#btn_save").on("click", function () {
+
             let data = table.rows().data();
-            console.log('Total de linhas'+data.length);
+            console.log('Total de linhas' + data.length);
             console.log(data[0][1]);
             // let itensArray = []; 
             // $("tbody tr").each(function(){

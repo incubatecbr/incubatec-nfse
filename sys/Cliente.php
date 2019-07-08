@@ -30,24 +30,35 @@ class Cliente extends IncubaMain
         return $json;
     }
 
+    /**
+     * Função responsavel por inserir novo usuario no db.
+     * @return boolean
+     */
     public function newClient(){
         $rz = $_POST['data'][0]['value'];
         $data = $this->_format($_POST['data']);
-        $exist = $this->getClient( $data['cpf_cnpj'] );
-        if($exist == true){//existe cliente cadastro com esse cpf/cnpj.
+        $cpf_cnpj = $data["cpf_cnpj"];
+        $ie = $data["insc_estadual"];
+        if(strlen($cpf_cnpj) < 12):
+            $cpf_cnpj = substr_replace( $cpf_cnpj, "000", 0, 0 );//Adiciona zeros para completar CPF tamanho 14
+        endif;
+        if(strlen($ie) < 14 ):
+            $ie = str_pad($ie , 8);
+        endif;
+
+        $client = $this->getClient( $cpf_cnpj );
+        if($client){//existe cliente cadastro com esse cpf/cnpj.
             return "EXISTE!";
         }else{//não existe.
             $numero = intval($data['numero']);
-            $sql = "INSERT INTO clientes(`razao_social`,`cpf_cnpj`, `inscricao_estadual`, `logradouro`, `numero`, `complemento`, `bairro`, `municipio`, `cod_muni_ibge`, `uf`, `cep`, `telefone`) VALUES( '{$rz}', '{$data["cpf_cnpj"]}', '{$data["insc_estadual"]}', '{$data["endereco"]}', $numero, '{$data["complemento"]}', '{$data["bairro"]}', '{$data["municipio"]}', '{$data["cod_municipio_ibge"]}', '{$data["uf"]}', '{$data["cep"]}', '{$data["tel_contato"]}' )";
+            $sql = "INSERT INTO clientes(`razao_social`,`cpf_cnpj`, `inscricao_estadual`, `logradouro`, `numero`, `complemento`, `bairro`, `municipio`, `cod_muni_ibge`, `uf`, `cep`, `telefone`) VALUES( '{$rz}', '{$cpf_cnpj}', '{$ie}', '{$data["endereco"]}', $numero, '{$data["complemento"]}', '{$data["bairro"]}', '{$data["municipio"]}', '{$data["cod_municipio_ibge"]}', '{$data["uf"]}', '{$data["cep"]}', '{$data["tel_contato"]}' )";
             if($this->conn->query($sql) === TRUE) {
                 return true;
             }else{
                 return "Error {$this->conn->error}";
             }
             $this->conn->close();//fecha conexao com db.
-            
         }
-        
     }
 
     /**
@@ -59,11 +70,26 @@ class Cliente extends IncubaMain
         $sql = "SELECT * FROM clientes WHERE cpf_cnpj = {$cpf_cnpj}";
         $result = $this->conn->query($sql);
         if ($result->num_rows > 0) {
-            return true;
+            $client = $result->fetch_assoc();
+            return $client;
         }else{
             return false;
         }
         $this->conn->close();//fecha conexao com db.
+    }
+
+    /**
+     * Função que recebe a requisição e verifica se existe cliente cadastrado com esse CPF/CNPJ.
+     * @return object $client
+     */
+    public function getClientByCpfCnpj(){
+        $cpf_cnpj = $_POST['data'];
+        $cpf_cnpj_formated = $this->_remove($_POST['data']);
+        $client = $this->getClient($cpf_cnpj_formated);
+        if( !$client ){
+            return false;
+        }
+        return $client;
     }
     
     /**
