@@ -69,13 +69,14 @@
         <div class="form-group col-2">
             <label for="">CFOP</label>
             <input type="text" class="form-control" id="cfop" name="cfop" placeholder="Ex: 0104">
-            
+
         </div>
         <div class="form-group  col-2">
             <div class="mt-4">
-                <a href="#" class="badge badge-info" style="font-size: 100%; font-weight: 500;">TABELA CFOP</a>
+                <a id="tabela-cfop" data-menu="tabela-cfop" class="badge badge-info"
+                    style="font-size: 100%; font-weight: 500; cursor: pointer;">TABELA CFOP</a>
             </div>
-                
+
         </div>
     </div>
 </form>
@@ -164,7 +165,17 @@
         );
     }
     $(document).ready(function () {
-
+        $("#tabela-cfop").on("click", function () {
+            let page = $(this).data("menu");
+            page = './views/' + page + '.html';
+            $("#content").load(page, function (response, status, xhr) {
+                if (status == "error") { //Se não encontrar pagina na pasta VIEW.
+                    var msg = "Desculpe, mas houve um erro: ";
+                    $("#content").html(msg + xhr.status + " " + xhr.statusText);
+                }
+            });
+        });
+        //Instancia do plugin
         const table = $("#tb_item").DataTable({
             "paging": false,
             "ordering": false,
