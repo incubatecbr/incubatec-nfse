@@ -73,7 +73,7 @@
         </div>
         <div class="form-group  col-2">
             <div class="mt-4">
-                <a id="tabela-cfop" data-menu="tabela-cfop" class="badge badge-info"
+                <a id="tabela-cfop" data-menu="tabela-CFOP" class="badge badge-info"
                     style="font-size: 100%; font-weight: 500; cursor: pointer;">TABELA CFOP</a>
             </div>
 
@@ -165,7 +165,11 @@
         );
     }
     $(document).ready(function () {
+        //Mostra a tabela de classificação do item do doc fiscal
         $("#tabela-cfop").on("click", function () {
+            let titleContent = document.getElementById("title-page");
+            let title = titlePage( $(this).data("menu") );
+            titleContent.innerHTML = title;
             let page = $(this).data("menu");
             page = './views/' + page + '.html';
             $("#content").load(page, function (response, status, xhr) {
