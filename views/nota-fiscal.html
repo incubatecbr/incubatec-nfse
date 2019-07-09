@@ -179,7 +179,8 @@
         const table = $("#tb_item").DataTable({
             "paging": false,
             "ordering": false,
-            "info": false
+            "info": false,
+            "searching": false
         });
         $("#cpf_cnpj").on("blur", function () {
             let cpf_cnpj = $(this).val();
