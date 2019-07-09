@@ -1,6 +1,6 @@
 <!-- css table -->
-<link rel="stylesheet" href="assets/css/dataTables-bootstrap.min.css"><!-- css table -->
-
+<link rel="stylesheet" href="assets/css/dataTables-bootstrap.min.css">
+<!-- css table -->
 <form id="form-nf">
     <div class="alert alert-primary" role="alert">
         Preencha o CPF/CNPJ de um cliente cadastrado no sistema.
@@ -30,8 +30,8 @@
             <input type="text" class="form-control" id="dt_emissao" name="dt_emissao">
         </div>
         <div class="form-group col-2">
-            <label for="">Data de prestação:</label>
-            <input type="text" class="form-control" id="dt_prestacao" name="dt_prestacao">
+            <label for="">Ano e mês de apuração:</label>
+            <input type="text" class="form-control" id="ano_mes_apu" name="ano_mes_apu" placeholder="Ex: 19/12">
         </div>
         <div class="form-group col-2">
             <label for="">Situação do documento:</label>
@@ -40,6 +40,42 @@
                 <option value="N">Normal</option>
                 <option value="S">Cancelado</option>
             </select>
+        </div>
+        <div class="form-group col-2">
+            <label for="">Modelo:</label>
+            <select class="custom-select" name="modelo">
+                <option value="" selected>...</option>
+                <option value="21">21</option>
+                <option value="22">22</option>
+            </select>
+        </div>
+    </div>
+    <div class="form-row">
+        <div class="form-group col-4">
+            <label for="">Tipo de Cliente:</label>
+            <select class="custom-select" name="tipo_cliente">
+                <option value="" selected>...</option>
+                <option value="01">Comercial</option>
+                <option value="02">Industrial</option>
+                <option value="03">Residencial/Pessoa Fisica</option>
+                <option value="04">Produtor Rural</option>
+                <option value="05">Orgão da Administração Pública</option>
+                <option value="06">Prestador de Serviço de Telecomunicações</option>
+                <option value="07">Missões Diplomáticas, Repartições Consulares e Organismos Internacionais</option>
+                <option value="08">Igreja e Templos de qualquer natureza</option>
+                <option value="99">Outros</option>
+            </select>
+        </div>
+        <div class="form-group col-2">
+            <label for="">CFOP</label>
+            <input type="text" class="form-control" id="cfop" name="cfop" placeholder="Ex: 0104">
+            
+        </div>
+        <div class="form-group  col-2">
+            <div class="mt-4">
+                <a href="#" class="badge badge-info" style="font-size: 100%; font-weight: 500;">TABELA CFOP</a>
+            </div>
+                
         </div>
     </div>
 </form>
@@ -85,11 +121,11 @@
 <table id="tb_item" class="table table-sm table-bordered">
     <thead class="thead">
         <tr>
-            <th scope="col">cod_service</th>
-            <th scope="col">Serviços</th>
+            <th scope="col">COD_SERVICE</th>
+            <th scope="col">SEVIÇO</th>
             <th scope="col">R$</th>
-            <th scope="col">Unidade</th>
-            <th scope="col">Qnt</th>
+            <th scope="col">UN</th>
+            <th scope="col">QNT</th>
             <th scope="col">ICMS</th>
             <th scope="col">Ação</th>
         </tr>
@@ -116,7 +152,8 @@
         reverse: true
     });
     $("#dt_emissao").mask("00/00/0000");
-    $("#dt_prestacao").mask("00/00/0000");
+    $("#ano_mes_apu").mask("00/00");
+    $("#cfop").mask("0000");
     //masks inputs
 
 
