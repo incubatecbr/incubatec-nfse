@@ -77,8 +77,6 @@ $("#menu li").click(function () {
 
 /**
  * Função responsavel por formatar o valor passado com a expressão regular.
- * @param event objeto
- * @param keyRE expressão regular
  */
 function formatData(event, keyRE) {
     if (	( typeof(event.keyCode) != 'undefined' && event.keyCode > 0 && String.fromCharCode(event.keyCode).search(keyRE) != (-1) ) || 
@@ -89,6 +87,22 @@ function formatData(event, keyRE) {
     } else {
         return false;
     }
+}
+/**
+ * Função para formatadar os dados da tabela de serviço.
+ */
+function dataTableFormated(array){
+    let newArr = [];
+    if(array.length < 2){
+        newArr = array[0];
+        newArr.pop();//Remove o ultimo elemento. É o botao excluir.
+    }else{
+        for (let i = 0; i < array.length; i++) {
+            newArr[i] = array[i];
+            newArr[i].pop();//Remove o ultimo elemento. É o botao excluir.
+        }
+    }
+    return newArr;
 }
 
 function titlePage(name) {

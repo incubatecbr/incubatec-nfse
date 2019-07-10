@@ -6,6 +6,7 @@
         Preencha o CPF/CNPJ de um cliente cadastrado no sistema.
     </div>
     <div class="form-row">
+        <input type="hidden" id="id" name="id">
         <div class="form-group col-2">
             <label for="cpf_cnpj">CPF/CNPJ Cliente:</label>
             <input type="text" class="form-control" id="cpf_cnpj" name="cpf_cnpj">
@@ -86,7 +87,7 @@
     <div class="form-row">
         <div class="form-group col-2">
             <label for="cod_service">Cód. Serviço:</label>
-            <input type="text" class="form-control" id="cod_service" name="cod_servico" maxlength="10">
+            <input type="text" class="form-control" id="cod_service" name="cod_servico" onkeypress="return formatData(event, /[A-Za-z0-9]/);" maxlength="10">
         </div>
         <div class="form-group col-4">
             <label for="descricao_servico">Descrição:</label>
@@ -106,8 +107,7 @@
         </div>
         <div class="form-group col-2">
             <label for="qtn_faturada_servico">Quantidade Faturada:</label>
-            <input type="text" class="form-control" name="qtn_faturada_servico" id="qtn_faturada_servico"
-                maxlength="11">
+            <input type="text" class="form-control" name="qtn_faturada_servico" id="qtn_faturada_servico" maxlength="11" placeholder="Ex: 1,00">
         </div>
         <div class="form-group col-2">
             <label for="bc_icms_servico">Base Cálculo ICMS:</label>
@@ -145,25 +145,14 @@
 
 <script>
     //masks inputs
-    $("#total_service").mask("#.##0,00", {
-        reverse: true
-    });
-    $("#qtn_faturada_servico").mask("#,000");
-    $("#bc_icms_servico").mask("#.##0,00", {
-        reverse: true
-    });
+    $("#total_service").mask("#.##0,00", {reverse: true});
+    $("#qtn_faturada_servico").mask("#,00");
+    $("#bc_icms_servico").mask("#.##0,00", { reverse: true });
     $("#dt_emissao").mask("00/00/0000");
     $("#ano_mes_apu").mask("00/00");
     $("#cfop").mask("0000");
-    //masks inputs
 
-
-    function addItem(name, uni, money) {
-        //console.log(name);console.log(uni);console.log(money);
-        $("#tb_item tbody").append("<tr><td>" + name + "</<td><td>" + uni + "</td><td>" + money +
-            "</td><td><button tpye='button' class='btn-danger delRow' onclick='deleteItem(this);'>X</button></td>  <tr>"
-        );
-    }
+    //document ready
     $(document).ready(function () {
         //Mostra a tabela de classificação do item do doc fiscal
         $("#tabela-cfop").on("click", function () {
@@ -186,53 +175,33 @@
             "info": false,
             "searching": false
         });
+        //Evento apos campo CPF/CNPJ perder o foco envia uma solicitação para verificar se existe cliente.
         $("#cpf_cnpj").on("blur", function () {
             let cpf_cnpj = $(this).val();
             if (cpf_cnpj.length < 14) {
                 $(this).val('');
                 $(this).attr("autofocus");
-                $.alert({
-                    type: 'red',
-                    title: 'Atenção!',
-                    content: 'CPF Inválido!'
-                });
-            } else if (cpf_cnpj.length > 14 && cpf_cnpj.length < 18) {
-                $.alert({
-                    type: 'red',
-                    title: 'Atenção!',
-                    content: 'CNPJ Inválido!'
-                });
+                $.alert({ type: 'red',title: 'Atenção!',content: 'CPF Inválido!'});
+            }   else if (cpf_cnpj.length > 14 && cpf_cnpj.length < 18) {
+                $.alert({ type: 'red',title: 'Atenção!',content: 'CNPJ Inválido!' });
             } else {
                 //busca informações do cliente
                 $.ajax({
                     type: "POST",
                     url: "",
-                    data: {
-                        class: 'Cliente',
-                        action: 'getClientByCpfCnpj',
-                        data: cpf_cnpj
-                    },
-                    error: function () {
-                        alert("Não foi possível atender sua requisição.");
-                    },
-                    beforeSend: function () {
-                        $("#spinner-loader").show();
-                    },
+                    data: {class: 'Cliente',action: 'getClientByCpfCnpj',data: cpf_cnpj},
+                    error: function () {alert("Não foi possível atender sua requisição.");},
+                    beforeSend: function () {$("#spinner-loader").show();},//carrega spinner
                     success: function (data, textStatus, jqXHR) {
                         $("#spinner-loader").hide();
                         if (data === false) {
-                            $.alert({
-                                type: 'red',
-                                title: 'Atenção!',
-                                content: 'O CPF/CNPJ informado não está associado a um cliente, por favor cadastre o cliente.',
-                            });
+                            $.alert({type: 'red', title: 'Atenção!',content: 'O CPF/CNPJ informado não está associado a um cliente, por favor cadastre o cliente.'});
                             $("#form-cliente").trigger('reset');
                         }
                         //console.log(data);
                         $("#razao_social").val(data.razao_social);
                         $("#insc_estadual").val(data.inscricao_estadual);
-                        // $("#cod_ibge_m").val(data.ibge);
-
+                        $("#id").val(data.id);
                     }
                 });
 
@@ -263,10 +232,7 @@
             } else {
                 $("#form-itemService").trigger('reset');
                 //addItem(arrayS[1]['value'], arrayS[3]['value'], arrayS[2]['value']);
-                table.row.add([arrayS[0]['value'], arrayS[1]['value'], arrayS[2]['value'], arrayS[3][
-                        'value'
-                    ], arrayS[4]['value'], arrayS[5]['value'],
-                    "<button tpye='button' class='btn-danger'>EXCLUIR</button>"
+                table.row.add([arrayS[0]['value'], arrayS[1]['value'], arrayS[2]['value'], arrayS[3]['value'], arrayS[4]['value'], arrayS[5]['value'],"<button tpye='button' class='btn-danger'>EXCLUIR</button>"
                 ]).draw(false);
             }
 
@@ -278,12 +244,19 @@
 
         $("#btn_save").on("click", function () {
             let dataForm = $('#form-nf').serializeArray();
-            let data = table.rows().data();
-            //console.log('Total de linhas' + data.length);
-            //console.log(data[0][1]);
-            console.log(dataForm);
-            console.log(data);
-                        
+            let dataService = dataTableFormated(  table.data() );
+            //console.log(dataService);
+            $.ajax({
+                    type: "POST",
+                    url: "",
+                    data: {class: 'Nota', action: 'insertNewNF', dataFor: dataForm, data2: dataService},
+                    error: function () {alert("Não foi possível atender sua requisição.");},
+                    beforeSend: function () {$("#spinner-loader").show();},//carrega spinner
+                    success: function (data, textStatus, jqXHR) {
+                        $("#spinner-loader").hide();
+                        console.log(data)
+                    }
+            });
         });
     });
 </script>

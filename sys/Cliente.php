@@ -67,7 +67,7 @@ class Cliente extends IncubaMain
      * @return bool
      */
     public function getClient($cpf_cnpj){
-        $sql = "SELECT * FROM clientes WHERE cpf_cnpj = {$cpf_cnpj}";
+        $sql = "SELECT id, razao_social, cpf_cnpj, inscricao_estadual FROM clientes WHERE cpf_cnpj = {$cpf_cnpj}";
         $result = $this->conn->query($sql);
         if ($result->num_rows > 0) {
             $client = $result->fetch_assoc();
@@ -90,6 +90,22 @@ class Cliente extends IncubaMain
             return false;
         }
         return $client;
+    }
+
+    /**
+     * Função responsavel por retornar todos os dados do cliente com base no seu ID.
+     * @param $id user
+     */
+    public function getAllDataCliente($id){
+        $sql = "SELECT * FROM clientes WHERE id = {$id}";
+        $result = $this->conn->query($sql);
+        if ($result->num_rows > 0) {
+            $client = $result->fetch_assoc();
+            return $client;
+        }else{
+            return false;
+        }
+        $this->conn->close();//fecha conexao com db.
     }
     
     /**
