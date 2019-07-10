@@ -7,15 +7,15 @@
     </div>
     <div class="form-row">
         <div class="form-group col-2">
-            <label for="">CPF/CNPJ Cliente:</label>
+            <label for="cpf_cnpj">CPF/CNPJ Cliente:</label>
             <input type="text" class="form-control" id="cpf_cnpj" name="cpf_cnpj">
         </div>
         <div class="form-group col-4">
-            <label for="">Razão Social:</label>
+            <label for="razao_social">Razão Social:</label>
             <input type="text" class="form-control" id="razao_social" name="razao_social" readonly>
         </div>
         <div class="form-group col-2">
-            <label for="">Inscrição Estadual:</label>
+            <label for="insc_estadual">Inscrição Estadual:</label>
             <input type="text" class="form-control" name="insc_estadual" id="insc_estadual" readonly>
         </div>
     </div>
@@ -26,15 +26,15 @@
     <!-- spinner loader -->
     <div class="form-row">
         <div class="form-group col-2">
-            <label for="">Data de emissão:</label>
+            <label for="dt_emissao">Data de emissão:</label>
             <input type="text" class="form-control" id="dt_emissao" name="dt_emissao">
         </div>
         <div class="form-group col-2">
-            <label for="">Ano e mês de apuração:</label>
+            <label for="ano_mes_apu">Ano e mês de apuração:</label>
             <input type="text" class="form-control" id="ano_mes_apu" name="ano_mes_apu" placeholder="Ex: 19/12">
         </div>
         <div class="form-group col-2">
-            <label for="">Situação do documento:</label>
+            <label for="situacao_doc">Situação do documento:</label>
             <select class="custom-select" name="situacao_doc">
                 <option value="" selected>...</option>
                 <option value="N">Normal</option>
@@ -42,7 +42,7 @@
             </select>
         </div>
         <div class="form-group col-2">
-            <label for="">Modelo:</label>
+            <label for="modelo">Modelo:</label>
             <select class="custom-select" name="modelo">
                 <option value="" selected>...</option>
                 <option value="21">21</option>
@@ -52,7 +52,7 @@
     </div>
     <div class="form-row">
         <div class="form-group col-4">
-            <label for="">Tipo de Cliente:</label>
+            <label for="tipo_cliente">Tipo de Cliente:</label>
             <select class="custom-select" name="tipo_cliente">
                 <option value="" selected>...</option>
                 <option value="01">Comercial</option>
@@ -67,7 +67,7 @@
             </select>
         </div>
         <div class="form-group col-2">
-            <label for="">CFOP</label>
+            <label for="cfop">CFOP</label>
             <input type="text" class="form-control" id="cfop" name="cfop" placeholder="Ex: 0104">
 
         </div>
@@ -85,15 +85,15 @@
 <form id="form-itemService" action="POST">
     <div class="form-row">
         <div class="form-group col-2">
-            <label for="">Cód. Serviço:</label>
+            <label for="cod_service">Cód. Serviço:</label>
             <input type="text" class="form-control" id="cod_service" name="cod_servico" maxlength="10">
         </div>
         <div class="form-group col-4">
-            <label for="">Descrição:</label>
+            <label for="descricao_servico">Descrição:</label>
             <input type="text" class="form-control" id="descricao_servico" name="descricao_servico" maxlength="40">
         </div>
         <div class="form-group col-2">
-            <label for="">Valor total R$:</label>
+            <label for="total_service">Valor total R$:</label>
             <input type="text" class="form-control" id="total_service" name="total_servico" maxlength="11">
         </div>
 
@@ -101,16 +101,16 @@
 
     <div class="form-row">
         <div class="form-group col-1">
-            <label for="">Unidade:</label>
+            <label for="unidade_servico">Unidade:</label>
             <input type="text" class="form-control" id="unidade_servico" name="unidade_servico" value="UN" readonly>
         </div>
         <div class="form-group col-2">
-            <label for="">Quantidade Faturada:</label>
+            <label for="qtn_faturada_servico">Quantidade Faturada:</label>
             <input type="text" class="form-control" name="qtn_faturada_servico" id="qtn_faturada_servico"
                 maxlength="11">
         </div>
         <div class="form-group col-2">
-            <label for="">Base Cálculo ICMS:</label>
+            <label for="bc_icms_servico">Base Cálculo ICMS:</label>
             <input type="text" class="form-control" id="bc_icms_servico" name="bc_icms_servico" maxlength="11">
         </div>
         <div class="form-group col-2">
@@ -277,16 +277,13 @@
         });
 
         $("#btn_save").on("click", function () {
-
+            let dataForm = $('#form-nf').serializeArray();
             let data = table.rows().data();
-            console.log('Total de linhas' + data.length);
-            console.log(data[0][1]);
-            // let itensArray = []; 
-            // $("tbody tr").each(function(){
-            //     console.log( $(this).find('td').html() );
-            // });
-            //alert('clicou..');
-            //console.log(itensArray);
+            //console.log('Total de linhas' + data.length);
+            //console.log(data[0][1]);
+            console.log(dataForm);
+            console.log(data);
+                        
         });
     });
 </script>
