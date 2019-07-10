@@ -75,6 +75,21 @@ $("#menu li").click(function () {
     });
 });
 
+/**
+ * Função responsavel por formatar o valor passado com a expressão regular.
+ * @param event objeto
+ * @param keyRE expressão regular
+ */
+function formatData(event, keyRE) {
+    if (	( typeof(event.keyCode) != 'undefined' && event.keyCode > 0 && String.fromCharCode(event.keyCode).search(keyRE) != (-1) ) || 
+        ( typeof(event.charCode) != 'undefined' && event.charCode > 0 && String.fromCharCode(event.charCode).search(keyRE) != (-1) ) ||
+        ( typeof(event.charCode) != 'undefined' && event.charCode != event.keyCode && typeof(event.keyCode) != 'undefined' && event.keyCode.toString().search(/^(8|9|13|45|46|35|36|37|39)$/) != (-1) ) ||
+        ( typeof(event.charCode) != 'undefined' && event.charCode == event.keyCode && typeof(event.keyCode) != 'undefined' && event.keyCode.toString().search(/^(8|9|13)$/) != (-1) ) ) {
+        return true;
+    } else {
+        return false;
+    }
+}
 
 function titlePage(name) {
     return name.replace('-', ' ');
