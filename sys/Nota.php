@@ -31,11 +31,26 @@ class Nota extends IncubaMain{
         $telE = Util::replaceString($data_e["tel_responsavel"]);
 
         //$sql = "INSERT INTO nota_fiscal(num_nota, cpf_cnpj_cliente, razao_social, inscricao_estadual, cod_consumidor_cliente, data_emissao_nf, ano_mes_apuracao, modelo, cfop, situacao_doc, referencia_item_nota, telefone_cliente, ind_tipo_cpf_cnpj, tipo_cliente, telefone_empresa, cnpj_emitente, valor_total_nf) VALUES('{$numNota}','{$data_c["cpf_cnpj"]}', '{$data_c["razao_social"]}', '{$data_c["inscricao_estadual"]}', '{$data_c["id"]}', '{$data["dt_emissao"]}', '{$data["ano_mes_apu"]}', '{$data["modelo"]}', '{$data["cfop"]}', '{$data["situacao_doc"]}', 'ref', '{$telC}', $ind_tipo_cpf_cnpj, '{$data["tipo_cliente"]}', '{$telE}', '{$cnpj_e}','{$vlrTotalNF}')";
-        foreach ($service as $s => $val) {
-            //$sql = "INSERT INTO item_nota(id_nota, cod_item, descricao, valor_item) VALUES(``,``,``,``,``)";
-
-            print_r("{$val} <br>");
+        
+        $new = [];
+        for ($i=0; $i < count($service); $i++) { 
+            if (is_array($service[$i])): 
+                //$new["itens"][$i] = $service[$i];
+                for ($j=0; $j < 6; $j++) { 
+                    //$new["itens"][$i] = $service[$j];
+                    //var_dump( $service[$i][$j] ) ;
+                    $new["itens"][$i] = $service[$i];
+                }
+            endif;
         }
+        var_dump($new);
+        //
+        
+        // foreach ($service as $s => $val) {
+        //     //$sql = "INSERT INTO item_nota(id_nota, cod_item, descricao, valor_item) VALUES(``,``,``,``,``)";
+
+        //     print_r("{$val} <br>");
+        // }
 
         die();
 
