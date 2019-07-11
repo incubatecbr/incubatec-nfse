@@ -12,48 +12,69 @@ class Nota extends IncubaMain{
 
     public function insertNewNF(){
         $service = $_POST['data2'];
-        $data = $this->newFormat($_POST['dataFor']);
-        $numNF = "000000001";
-        if ( strlen($data['cpf_cnpj']) < 12 ) {
-            $ind_tipo_cpf_cnpj = 00;
-        }else{
-            $ind_tipo_cpf_cnpj = 01;
-        }
-        $data_e = $this->_dataEnterprise();
-        $data_c = $this->_dataCliente($data['id']);//Dados do cliente.
-        $number = $this->_numberNF();
-        $vlrTotalNF = $this->somaVlrTotalNF($service);
-        $sql = "INSERT INTO nota_fiscal(num_nota, cpf_cnpj_cliente, razao_social, inscricao_estadual, cod_consumidor_cliente, data_emissao_nf, ano_mes_apuracao, modelo, cfop, situacao_doc, referencia_item_nota, telefone_cliente, ind_tipo_cpf_cnpj, tipo_cliente, telefone_empresa, cnpj_emitente, valor_total_nf) VALUES('{$numNF}','{$data_c["cpf_cnpj"]}', '{$data_c["razao_social"]}', '{$data_c["inscricao_estadual"]}', '{$data_c["id"]}', '{$data["dt_emissao"]}', '{$data["ano_mes_apu"]}', '{$data["modelo"]}', '{$data["cfop"]}', '{$data["situacao_doc"]}', 'ref', 'telefone', $ind_tipo_cpf_cnpj, '{$data["tipo_cliente"]}', '{$data_e["tel_responsavel"]}', '{$data_e["cnpj"]}', 'VlrTotal')";
-
-
-        return $vlrTotalNF;
-    }
-    //CONTINUAR A SOMATORIA DOS VALORES
-    //função para salvar o valor total da nota
-    public function somaVlrTotalNF($arr){
-        print_r(array_keys($arr) );
-        //return var_dump($arr);
         
-    }
-    //formata data
-    public function newFormat($array){
-        $newArray = array();
-        for ($i=0; $i < count($array); $i++) { 
-            $newArray[$array[$i]['name']] = $this->remove($array[$i]['value']);
+        $data = Util::formatArray($_POST['dataFor']);
+        if ( strlen($data['cpf_cnpj']) < 12 ) {
+            $ind_tipo_cpf_cnpj = 2;
+        }else{
+            $ind_tipo_cpf_cnpj = 1;
         }
-        return $newArray;
-    }//remove os pontos
-    public function remove($s){
-        $remove = array (".",",","/","(",")","-");
-        $r = str_replace($remove, "", $s);
-        return $r;
+        $lastNum = $this->getMaxNumberNota();
+        $numNota = (!isset($lastNum) OR ($lastNum == null) ) ? "000000001" : Util::nextNumberOfNota($lastNum);
+
+        $data_e = $this->_dataEnterprise();//Dados empresa
+        $data_c = $this->_dataCliente($data['id']);//Dados do cliente.
+   
+        $vlrTotalNF = Util::sumValuesItens($service);
+        $cnpj_e = Util::replaceString($data_e["cnpj"]);
+        $telC = Util::replaceString($data_c["telefone"]);
+        $telE = Util::replaceString($data_e["tel_responsavel"]);
+
+        //$sql = "INSERT INTO nota_fiscal(num_nota, cpf_cnpj_cliente, razao_social, inscricao_estadual, cod_consumidor_cliente, data_emissao_nf, ano_mes_apuracao, modelo, cfop, situacao_doc, referencia_item_nota, telefone_cliente, ind_tipo_cpf_cnpj, tipo_cliente, telefone_empresa, cnpj_emitente, valor_total_nf) VALUES('{$numNota}','{$data_c["cpf_cnpj"]}', '{$data_c["razao_social"]}', '{$data_c["inscricao_estadual"]}', '{$data_c["id"]}', '{$data["dt_emissao"]}', '{$data["ano_mes_apu"]}', '{$data["modelo"]}', '{$data["cfop"]}', '{$data["situacao_doc"]}', 'ref', '{$telC}', $ind_tipo_cpf_cnpj, '{$data["tipo_cliente"]}', '{$telE}', '{$cnpj_e}','{$vlrTotalNF}')";
+        foreach ($service as $s => $val) {
+            //$sql = "INSERT INTO item_nota(id_nota, cod_item, descricao, valor_item) VALUES(``,``,``,``,``)";
+
+            print_r("{$val} <br>");
+        }
+
+        die();
+
+
+        if($this->conn->query($sql) === TRUE) {
+            //return true; //INSERIR ITENS DA NOTA
+            $last_id = $this->conn->insert_id;
+            
+            //return $last_id;
+            
+        }else{
+            return "Error {$this->conn->error}";
+        }
+        $this->conn->close();//fecha conexao com db.
+        
+        //return $sql;
     }
+
+    
+    /**
+     * Função para retornar o maior id de nota fiscal.
+     * @return $max Retorna nulll ou numero.
+     */
+    public function getMaxNumberNota(){
+        $sql = "SELECT MAX(id_nota) AS numMax from nota_fiscal";
+        $exe = $this->conn->query($sql);
+        $result = $exe->fetch_assoc();
+        $max = ( !isset($result) ) ? null : $result['numMax'];
+        return $max;
+    }
+
+
+
 
     public function _dataEnterprise(){
         $emp = new Empresa();
         return $emp->getCompanyData();
     }
-
+   
 
     /**
      * Função responsavel por instanciar a classe de cliente e utilizar o methodo para buscar todos os dados de um determinado cliente. 
@@ -65,18 +86,7 @@ class Nota extends IncubaMain{
         return $cliente->getAllDataCliente($id);
     }
 
-    public function _numberNF(){
-        $sql = "SELECT MAX(id_nota) from nota_fiscal";
-        $result = $this->conn->query($sql);
-        if ($result->num_rows > 0) {
-            $res = $result->fetch_assoc();
-        }else{
-            $res = null;
-        }
-        return $res;
-        
-    }
-    
+
 
  
 }

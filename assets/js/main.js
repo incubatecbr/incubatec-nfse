@@ -98,6 +98,7 @@ function dataTableFormated(array){
         newArr.pop();//Remove o ultimo elemento. É o botao excluir.
     }else{
         for (let i = 0; i < array.length; i++) {
+            //[$array[$i]['name']]
             newArr[i] = array[i];
             newArr[i].pop();//Remove o ultimo elemento. É o botao excluir.
         }

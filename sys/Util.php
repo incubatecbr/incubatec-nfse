@@ -3,29 +3,43 @@
 class Util
 {
 
-    /**
-     * Função para somar os valores com base no indice do array
-     * @param Array $array
-     * @param Int $indice
-     * @return String $sum Somatoria dos valores formatado com decimal ( 1000 = 10,00 ).
-     */
-    public static function sumValuesArray($array, $indice){
-        for ($i = 0; $i < count($array); $i++) {
-            if (is_array($array[$i])):
-                $rows = true;
+    public static function sumValuesItens($service){
+        $services = 0;
+        for ($i = 0; $i < count($service); $i++){
+            if (is_array($service[$i])): //verifica se o indice contem um array.
+                $services++; //contagem de quantos itens.
             endif;
         }
-        if (isset($rows) || !empty($rows)) {
-            $sum = 0;
-            for ($i = 0; $i < count($array); $i++) {
-                $sb = str_replace(',', '.', $array[$i][$indice]); //remove virgula e ponto para realizar a soma dos valores.
-                $sum += $sb;
-            }
-        } else {
-            $sum = str_replace(',', '.', $array[0][$indice]);
-        }
-        return number_format($sum, 2, '', ''); //number format ex: 500 (5,00).
+        if(isset($services) && $services != 0){
+            //return $services;
+            $val = Util::sumValues($service);
+            return $val;
+        }else{
+            //return $service[2];
+            return str_replace (',', '', $service[2]);
+            // return number_format($service[2], 2, '', '');
+        }    
     }
+    
+    /**
+     * Função para retornar o proximo numero de NF.
+     * @param Int $num
+     * @return String numero formatado com zero a esquerda. 
+     */
+    public static function nextNumberOfNota($num){
+        $num++;//increment +1.
+        return sprintf("%'.09d", $num);
+    }
+
+    public static function sumValues($array){
+        $sum = 0;
+        for ($i = 0; $i < count($array); $i++) {
+            $sb = str_replace(',', '.', $array[$i][2]); //remove virgula e ponto para realizar a soma dos valores.
+            $sum += $sb;
+        }
+        return number_format($sum, 2, '', '');
+    }
+
 
     /**
      * Função para reorganizar o array. 
@@ -36,7 +50,7 @@ class Util
     public static function formatArray($array){
         $newArray = array();
         for ($i = 0; $i < count($array); $i++) {
-            $newArray[$array[$i]['name']] = Util::replaceArray($array[$i]['value']);
+            $newArray[$array[$i]['name']] = Util::replaceString($array[$i]['value']);
         }
         return $newArray;
     }
@@ -46,7 +60,7 @@ class Util
      * @param String $string 
      * @return String $r Nova string
      */
-    public static function replaceArray($string){
+    public static function replaceString($string){
         $remove = array(".", ",", "/", "(", ")", "-");
         $r = str_replace($remove, "", $string);
         return $r;
