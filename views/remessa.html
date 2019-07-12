@@ -1,0 +1,41 @@
+<form id="form-remessa">
+    <div class="form-group row">
+        <label class="col-sm-2 col-form-label">Mês/Ano Referência:</label>
+        <div class="col-sm-3">
+            <select class="custom-select" name="mes">
+                <option value="" selected>Selecione o mês</option>
+                <option value="01">Janeiro</option>
+                <option value="02">Fevereiro</option>
+                <option value="03">Março</option>
+                <option value="04">Abril</option>
+                <option value="05">Maio</option>
+                <option value="06">Junho</option>
+                <option value="07">Julho</option>
+                <option value="08">Agosto</option>
+                <option value="09">Setembro</option>
+                <option value="10">Outubro</option>
+                <option value="11">Novembro</option>
+                <option value="12">Dezembro</option>
+            </select>
+        </div>
+        <div class="col-sm-1">
+            <input type="text" name="ano" class="form-control" value="2019" readonly/>
+        </div>
+    </div>
+    <div class="row">
+        <div class="form-group col-sm-3 mx-auto">
+            <button type="submit" class="btn btn-success">Gerar Arquivo</button>
+        </div>
+    </div>
+</form>
+<script>
+$(document).ready(function () {
+
+    $("#form-remessa").on("submit", function(event){
+        event.preventDefault();
+        let data = $(this).serializeArray();
+        console.log(data);
+    });
+
+});
+</script>
