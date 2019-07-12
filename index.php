@@ -1,8 +1,9 @@
 <?php
    
-    $APP_PATH['root'] = $_SERVER['DOCUMENT_ROOT'] . '/Incubatecnf/';
+    $APP_PATH['root'] = $_SERVER['DOCUMENT_ROOT'] . '/IncubatecNF/';
     $APP_PATH['sys'] = $APP_PATH['root'] . 'sys/';
     $APP_PATH['view'] = $APP_PATH['root'] . 'views/';
+    $APP_PATH['remessa'] = $APP_PATH['root'] . 'views/';
 
     require_once('autoloader.php');
     
