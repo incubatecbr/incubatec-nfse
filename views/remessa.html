@@ -2,7 +2,7 @@
     <div class="form-group row">
         <label class="col-sm-2 col-form-label">Mês/Ano Referência:</label>
         <div class="col-sm-3">
-            <select class="custom-select" name="mes">
+            <select class="custom-select" name="mes" id="mes">
                 <option value="" selected>Selecione o mês</option>
                 <option value="01">Janeiro</option>
                 <option value="02">Fevereiro</option>
@@ -30,11 +30,31 @@
 </form>
 <script>
 $(document).ready(function () {
-
+    //remove class
+    $("#form-remessa select").focus(function () {
+            $(this).removeClass("inp-error");
+    });
     $("#form-remessa").on("submit", function(event){
         event.preventDefault();
-        let data = $(this).serializeArray();
-        console.log(data);
+        if ( $("#mes").val()  == '' ){
+                $("#mes").addClass("inp-error");
+                alert('Por favor, escolha um mês.');
+        }else{
+            let data = $(this).serializeArray();
+            //console.log(data);
+            $.ajax({
+                    type: "POST",
+                    url: "",
+                    data: {class: 'Nota', action: 'createIdenficacao', dt: data },
+                    error: function () {alert("Não foi possível atender sua requisição.");},
+                    //beforeSend: function () {$("#spinner-loader").show();},//carrega spinner
+                    success: function (data, textStatus, jqXHR) {
+                        //$("#spinner-loader").hide();
+                        console.log(data);
+                    }
+            });
+        }
+        
     });
 
 });

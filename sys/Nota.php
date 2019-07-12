@@ -76,9 +76,10 @@ class Nota extends IncubaMain{
         return $max;
     }
 
-
-
-
+    /**
+     * Função responsavel instanciar a class empresa e retornar dados da mesma
+     * @return Array
+     */
     public function _dataEnterprise(){
         $emp = new Empresa();
         return $emp->getCompanyData();
@@ -88,12 +89,34 @@ class Nota extends IncubaMain{
     /**
      * Função responsavel por instanciar a classe de cliente e utilizar o methodo para buscar todos os dados de um determinado cliente. 
      * @param $id do usuário.
-     * @return array 
+     * @return Array 
      */
     public function _dataCliente($id){
         $cliente = new Cliente();
         return $cliente->getAllDataCliente($id);
     }
+
+    /**
+    * Funções para CRIAR, ABRIR os arquivos para validação.
+    * -----------------------------------------------------
+    */   
+
+    
+    /**
+     * Função para criar o arquivo de Identificação.ini 
+     * @return void
+     */
+    public function createIdenficacao(){
+        global $APP_PATH; //para acessar a variavel global
+        $enterprise = $this->_dataEnterprise();
+        $filepath = $APP_PATH['remessa'].'Identificacao.ini';
+        $file = fopen( $filepath, "w+") or die("Unable to open file!");
+        $txt = "[IDENTIFICACAO]\nRAZAO SOCIAL={$enterprise['razao_social']}\nIE={$enterprise['inscricao_estadual']}\nCNPJ={$enterprise['cnpj']}\n[ENDERECO]\nENDERECO={$enterprise['endereco']} {$enterprise['numero']}\nBAIRRO={$enterprise['bairro']}\nMUNICIPIO={$enterprise['municipio']}\nCEP={$enterprise['cep']}\nUF={$enterprise['uf']}\n[RESPONSAVEL]\nNOME={$enterprise['nome_responsavel']}\nCARGO={$enterprise['cargo_responsavel']}\nTELEFONE={$enterprise['tel_responsavel']}\nEMAIL={$enterprise['email_responsavel']}";
+        fwrite($file, $txt);
+        fclose($file);
+    }
+
+    
 
 
 
