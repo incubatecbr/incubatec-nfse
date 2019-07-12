@@ -107,11 +107,11 @@
         </div>
         <div class="form-group col-2">
             <label for="qtn_faturada_servico">Quantidade Faturada:</label>
-            <input type="text" class="form-control" name="qtn_faturada_servico" id="qtn_faturada_servico" maxlength="11" placeholder="Ex: 1,00">
+            <input type="text" class="form-control" name="qtn_faturada_servico" id="qtn_faturada_servico" maxlength="11" value="1,00" readonly>
         </div>
         <div class="form-group col-2">
             <label for="bc_icms_servico">Base Cálculo ICMS:</label>
-            <input type="text" class="form-control" id="bc_icms_servico" name="bc_icms_servico" maxlength="11">
+            <input type="text" class="form-control" id="bc_icms_servico" name="bc_icms_servico" maxlength="11" readonly>
         </div>
         <div class="form-group col-2">
             <button type="button" id="btnAddService" class="btn btn-info mt-4">Inserir</button>
@@ -147,13 +147,17 @@
     //masks inputs
     $("#total_service").mask("#.##0,00", {reverse: true});
     $("#qtn_faturada_servico").mask("#,00");
-    $("#bc_icms_servico").mask("#.##0,00", { reverse: true });
+    //$("#bc_icms_servico").mask("#.##0,00", { reverse: true });
     $("#dt_emissao").mask("00/00/0000");
     $("#ano_mes_apu").mask("00/00");
     $("#cfop").mask("0000");
 
     //document ready
     $(document).ready(function () {
+        //Preencher Base de Calculo com o mesmo valor do total.
+        $("#total_service").on("keyup", function(){
+            $("#bc_icms_servico").val( $(this).val() );
+        });
         //Mostra a tabela de classificação do item do doc fiscal
         $("#tabela-cfop").on("click", function () {
             let titleContent = document.getElementById("title-page");
@@ -224,11 +228,7 @@
                 }
             });
             if (err > 0) {
-                $.alert({
-                    type: 'red',
-                    title: 'Atenção!',
-                    content: 'Preencha todos os campos!'
-                });
+                $.alert({type: 'red',title: 'Atenção!',content: 'Preencha todos os campos!'});
             } else {
                 $("#form-itemService").trigger('reset');
                 //addItem(arrayS[1]['value'], arrayS[3]['value'], arrayS[2]['value']);
@@ -249,12 +249,13 @@
             $.ajax({
                     type: "POST",
                     url: "",
-                    data: {class: 'Nota', action: 'insertNewNF', dataFor: dataForm, data2: dataService},
+                    data: {class: 'Nota', action: 'newNotaFiscal', dataFor: dataForm, data2: dataService},
                     error: function () {alert("Não foi possível atender sua requisição.");},
                     beforeSend: function () {$("#spinner-loader").show();},//carrega spinner
                     success: function (data, textStatus, jqXHR) {
                         $("#spinner-loader").hide();
-                        console.log(data)
+                        
+                        $.alert({type: 'green',title: 'Sucesso!', content: data});
                     }
             });
         });

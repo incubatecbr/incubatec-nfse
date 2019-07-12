@@ -146,4 +146,13 @@ label{
   animation: spin 1s linear infinite;
 }
 
+.custom-year-remessa{
+  font-size: 1.5em;
+  font-weight: 600;
+}
+.custom-year-remessa:hover{
+  color:#007bff;
+  cursor: pointer;
+}
+
 
