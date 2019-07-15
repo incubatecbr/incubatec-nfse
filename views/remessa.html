@@ -19,7 +19,17 @@
             </select>
         </div>
         <div class="col-sm-1">
-            <input type="text" name="ano" class="form-control" value="2019" readonly/>
+            <input type="text" name="ano" id="ano" class="form-control" value="2019" readonly/>
+        </div>
+    </div>
+    <div class="form-group row">
+        <label class="col-sm-2 col-form-label">Modelo:</label>
+        <div class="col-sm-3">
+            <select class="custom-select" name="modelo" id="modelo">
+                <option value="" selected>Selecione o modelo</option>
+                <option value="21">21</option>
+                <option value="22" >22</option>
+            </select>
         </div>
     </div>
     <div class="row">
@@ -39,17 +49,24 @@ $(document).ready(function () {
         if ( $("#mes").val()  == '' ){
                 $("#mes").addClass("inp-error");
                 alert('Por favor, escolha um mês.');
+        }else if( $("#modelo").val()  == '' ){
+                $("#modelo").addClass("inp-error");
+                alert('Por favor, escolha um modelo.');
         }else{
-            let data = $(this).serializeArray();
+            //let mes = $("#mes").val();
+            let dados = {mes: $("#mes").val(), ano: $("#ano").val() ,modelo:$("#modelo").val()};
             //console.log(data);
             $.ajax({
                     type: "POST",
                     url: "",
-                    data: {class: 'Nota', action: 'createIdenficacao', dt: data },
+                    data: {class: 'Nota', action: 'createFileDestinatario', data: dados },
                     error: function () {alert("Não foi possível atender sua requisição.");},
                     //beforeSend: function () {$("#spinner-loader").show();},//carrega spinner
                     success: function (data, textStatus, jqXHR) {
                         //$("#spinner-loader").hide();
+                        if(data === false){
+                            alert('Nenhuma nota para esse mes.');
+                        }
                         console.log(data);
                     }
             });

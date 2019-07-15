@@ -43,7 +43,7 @@ class Cliente extends IncubaMain
             $cpf_cnpj = substr_replace( $cpf_cnpj, "000", 0, 0 );//Adiciona zeros para completar CPF tamanho 14
         endif;
         if(strlen($ie) < 14 ):
-            $ie = str_pad($ie , 8);
+            $ie = str_pad($ie , 14);   
         endif;
 
         $client = $this->getClient( $cpf_cnpj );

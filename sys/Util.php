@@ -3,6 +3,12 @@
 class Util
 {
 
+
+    public function generateMd5($row){
+        $hashConvert = mb_convert_encoding($row, "ISO-8859-1", "UTF-8");
+        return md5($hashConvert);
+    }
+
     /**
      * Função checa se no indice existe um array de dados
      * caso exista, passa array para função de soma.
