@@ -3,7 +3,11 @@
 class Util
 {
 
-
+    /**
+     * Função para encryptar hash MD5
+     * @param String $row
+     * @return String md5()
+     */
     public static function generateMd5($row){
         $hashConvert = mb_convert_encoding($row, "ISO-8859-1", "UTF-8");
         return md5($hashConvert);
@@ -72,6 +76,7 @@ class Util
         }
         return $newArray;
     }
+
     /**
      * Função para reorganizar o array. 
      * $newArray = ["name"] => ["value"];
@@ -89,7 +94,7 @@ class Util
     /**
      * Função para remover ponto, virgula barra, parenteses e traço.
      * @param String $string 
-     * @return String $r Nova string
+     * @return String $upperCase Nova string com uppercase
      */
     public static function replaceString($string){
         $remove = array(".", ",", "/", "(", ")", "-");
@@ -98,6 +103,13 @@ class Util
         return $upperCase;
     }
 
+    /**
+     * Função para adicionar espaço em branco ou 0 dependendo do $type.
+     * @param String $string
+     * @param Int $tam
+     * @param Char $type 'X' ou 'N'.
+     * @return String
+     */
     public static function addSpacesOrNumber($string, $tam, $type){
         $str = '';
         $tamAtual = strlen($string);
