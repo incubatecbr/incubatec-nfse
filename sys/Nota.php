@@ -116,18 +116,7 @@ class Nota extends IncubaMain{
         fclose($file);
     }
 
-    /**
-     * Função para criar o nome dos arquivos Mestre, Destinatario e Item.
-     * @param String $uf
-     * @param String $cnpj
-     * @param String $modelo
-     * @param String $serie
-     * @param String $ano
-     * @param String $mes
-     * @param String $status
-     * @param Char $tipo M para mestre, D para destinatario e I para item.
-     * @return void
-     */
+
     public function createFile($uf, $cnpj, $modelo, $serie, $ano, $mes, $status, $tipo, $arrayNotas ){
         global $APP_PATH; //para acessar a variavel global
         $filepath = $APP_PATH['remessa']."$uf$cnpj$modelo$serie$ano$mes$status$tipo.001";
@@ -172,20 +161,21 @@ class Nota extends IncubaMain{
 
         
     }
-    public function genareteMd5($campo){
-        switch ($campo) {
-            case 'campo21':
-                $hash = "";
-                $hashConvert = mb_convert_encoding($hash, "ISO-8859-1", "UTF-8");
-                return md5($hashConvert);
-                break;
-            
-            default:
-                # code...
-                break;
-        }
-    }
 
+    public function generateRemessa(){
+        global $APP_PATH;
+
+        $begin = $_POST['data']['ano'].'-'.$_POST['data']['mes'].'-01';
+        $end = $_POST['data']['ano'].'-'.$_POST['data']['mes'].'-31';
+        $modelo = $_POST['data']['modelo'];
+        $notas = $this->getNotaByDateWithModel($begin, $end, $modelo);
+        if(!$notas):
+           return false;
+        endif;
+            
+        
+                    
+    }
 
     public function createFileDestinatario(){
         $begin = $_POST['data']['ano'].'-'.$_POST['data']['mes'].'-01';
@@ -199,7 +189,7 @@ class Nota extends IncubaMain{
         $cnpj = Util::replaceString($emitente['cnpj']);
         $ano = substr($notas[0]['data_remessa'], 2, 2);
         $mes = substr($notas[0]['data_remessa'], 5, 2);
-        $fileD = $this->createFile($emitente['uf'], $cnpj, $notas[0]['modelo'], $notas[0]['serie'], $ano, $mes, $notas[0]['situacao_doc'], 'D', $notas );
+        //$fileD = $this->createFile($emitente['uf'], $cnpj, $notas[0]['modelo'], $notas[0]['serie'], $ano, $mes, $notas[0]['situacao_doc'], 'D', $notas );
         //$c = count($notas);
         //print_r($notas);
         return $fileD;

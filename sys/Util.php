@@ -4,7 +4,7 @@ class Util
 {
 
 
-    public function generateMd5($row){
+    public static function generateMd5($row){
         $hashConvert = mb_convert_encoding($row, "ISO-8859-1", "UTF-8");
         return md5($hashConvert);
     }
@@ -94,7 +94,24 @@ class Util
     public static function replaceString($string){
         $remove = array(".", ",", "/", "(", ")", "-");
         $r = str_replace($remove, "", $string);
-        return $r;
+        $upperCase = mb_strtoupper($r);//string uppercase
+        return $upperCase;
+    }
+
+    public static function addSpacesOrNumber($string, $tam, $type){
+        $str = '';
+        $tamAtual = strlen($string);
+        if($type == 'X'){
+            if($tamAtual < $tam):
+                $str = str_pad($string, $tam);
+            endif;
+        }else{
+            if($tamAtual < $tam):
+                $str = str_pad($string, $tam, "0", STR_PAD_LEFT);
+            endif;
+        }
+        $upperCase = mb_strtoupper($str);//string uppercase
+        return $upperCase;
     }
 
     

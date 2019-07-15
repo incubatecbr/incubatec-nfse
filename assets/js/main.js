@@ -6,6 +6,7 @@ $(document).ready(function () {
     let titlePage = document.getElementById("title-page");
     titlePage.innerHTML = 'Gerador de Arquivos Mestre, Identificação e Destinatario.';
     content.innerHTML = "<h1 class='text-center my-5'>Desenvolvido por Incubatec</h1>";
+
 });
 
 //Constante com nome dos estados e respectiva sigla.
@@ -62,7 +63,7 @@ $("#menu li").click(function () {
         $('#cep').mask("99999-999");
         $('.tel').mask("(99)99999-9999");
         $('#numero').mask("99999");
-        $('#tel_contato').mask("(99)9 9999-9999");
+        $('#tel_contato').mask("(99)99999-9999");
         //mascara cpf/cnpj no mesmo input
         var options = {
             onKeyPress: function (cpf, ev, el, op) {

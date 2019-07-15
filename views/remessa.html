@@ -59,7 +59,7 @@ $(document).ready(function () {
             $.ajax({
                     type: "POST",
                     url: "",
-                    data: {class: 'Nota', action: 'createFileDestinatario', data: dados },
+                    data: {class: 'Nota', action: 'generateRemessa', data: dados },
                     error: function () {alert("Não foi possível atender sua requisição.");},
                     //beforeSend: function () {$("#spinner-loader").show();},//carrega spinner
                     success: function (data, textStatus, jqXHR) {
