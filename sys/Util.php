@@ -6,7 +6,7 @@ class Util
     /**
      * Função para encryptar hash MD5
      * @param String $row
-     * @return String md5()
+     * @return String MD5
      */
     public static function generateMd5($row){
         $hashConvert = mb_convert_encoding($row, "ISO-8859-1", "UTF-8");
@@ -37,7 +37,7 @@ class Util
     }
     
     /**
-     * Função para retornar o proximo numero de NF.
+     * Função para retornar o proximo numero incrementado +1.
      * @param Int $num
      * @return String numero formatado com zero a esquerda. 
      */
@@ -99,31 +99,48 @@ class Util
     public static function replaceString($string){
         $remove = array(".", ",", "/", "(", ")", "-");
         $r = str_replace($remove, "", $string);
-        $upperCase = mb_strtoupper($r);//string uppercase
-        return $upperCase;
+        return $r;
     }
 
     /**
-     * Função para adicionar espaço em branco ou 0 dependendo do $type.
-     * @param String $string
-     * @param Int $tam
-     * @param Char $type 'X' ou 'N'.
+     * Função unicode para adicionar espaço ou 0 em uma string.
+     * @param String $str 
+     * @param Int $pad_len
+     * @param String $pad_str 
+     * @param $dir STR_PAD_RIGHT/STR_PAD_LEFT/STR_PAD_BOTH.
      * @return String
      */
-    public static function addSpacesOrNumber($string, $tam, $type){
-        $str = '';
-        $tamAtual = strlen($string);
-        if($type == 'X'){
-            if($tamAtual < $tam):
-                $str = str_pad($string, $tam);
-            endif;
-        }else{
-            if($tamAtual < $tam):
-                $str = str_pad($string, $tam, "0", STR_PAD_LEFT);
-            endif;
+    public static function str_pad_unicode($str, $pad_len, $pad_str = ' ', $dir = STR_PAD_RIGHT){
+        mb_internal_encoding("utf-8");
+        $str_len = mb_strlen($str);
+        $pad_str_len = mb_strlen($pad_str);
+        if (!$str_len && ($dir == STR_PAD_RIGHT || $dir == STR_PAD_LEFT)) {
+            $str_len = 1; // @debug
         }
-        $upperCase = mb_strtoupper($str);//string uppercase
-        return $upperCase;
+        if (!$pad_len || !$pad_str_len || $pad_len <= $str_len) {
+            return $str;
+        }
+
+        $result = null;
+        if ($dir == STR_PAD_BOTH) {
+            $length = ($pad_len - $str_len) / 2;
+            $repeat = ceil($length / $pad_str_len);
+            $result = mb_substr(str_repeat($pad_str, $repeat), 0, floor($length))
+                    . $str
+                    . mb_substr(str_repeat($pad_str, $repeat), 0, ceil($length));
+        } else {
+            $repeat = ceil($str_len - $pad_str_len + $pad_len);
+            if ($dir == STR_PAD_RIGHT) {
+                $result = $str . str_repeat($pad_str, $repeat);
+                $result = mb_substr($result, 0, $pad_len);
+            } else if ($dir == STR_PAD_LEFT) {
+                $result = str_repeat($pad_str, $repeat);
+                $result = mb_substr($result, 0, 
+                            $pad_len - (($str_len - $pad_str_len) + $pad_str_len))
+                        . $str;
+            }
+        }
+        return $result;
     }
 
     

@@ -41,24 +41,13 @@ class Cliente extends IncubaMain
         //razao social, cpf_cnpj, inscricao_estadual, logradouro, numero, complemento, cep, bairro, uf, municipio, cod_mun_ibge, telefone.
         //$rules = [35, 14, 14, 45, 5, 15, 8, 15, 2, 30, 7, 12];
         $data = Util::formatArray($_POST['data']);
-   
-        $razao_social = Util::addSpacesOrNumber($data["razao_social"], 35, 'X');
-        $cpf_cnpj = Util::addSpacesOrNumber($data["cpf_cnpj"], 14, 'N');
-        $ie = Util::addSpacesOrNumber($data["insc_estadual"], 14, 'X');
-        $logradouro = Util::addSpacesOrNumber($data["endereco"], 45, 'X');
-        $bairro = Util::addSpacesOrNumber($data["bairro"], 15, 'X');
-        $num = Util::addSpacesOrNumber($data["numero"], 5, 'N');
-        $comp = Util::addSpacesOrNumber($data["complemento"], 15, 'X');
-        $municipio = Util::addSpacesOrNumber($data["municipio"], 30, 'X');
-        $telefone = Util::addSpacesOrNumber($data["tel_contato"], 12, 'X');
-     
-        $client = $this->getClient( $cpf_cnpj );
-
+        $client = $this->getClient( $data["cpf_cnpj"] );
+                      
         if($client){//existe cliente cadastro com esse cpf/cnpj.
             return "EXISTE!";
-        }else{//não existe.
-            //$numero = intval($data['numero']);
-            $sql = "INSERT INTO clientes(`razao_social`,`cpf_cnpj`, `inscricao_estadual`, `logradouro`, `numero`, `complemento`, `bairro`, `municipio`, `cod_muni_ibge`, `uf`, `cep`, `telefone`) VALUES( '{$razao_social}', '{$cpf_cnpj}', '{$ie}', '{$logradouro}', '{$num}', '{$comp}', '{$bairro}', '{$municipio}', '{$data["cod_municipio_ibge"]}', '{$data["uf"]}', '{$data["cep"]}', '{$telefone}')";
+        }else{
+            //$sql = "INSERT INTO clientes(`razao_social`,`cpf_cnpj`, `inscricao_estadual`, `logradouro`, `numero`, `complemento`, `bairro`, `municipio`, `cod_muni_ibge`, `uf`, `cep`, `telefone`) VALUES( '{$razao_social}', '{$cpf_cnpj}', '{$ie}', '{$logradouro}', '{$num}', '{$comp}', '{$bairro}', '{$municipio}', '{$data["cod_municipio_ibge"]}', '{$data["uf"]}', '{$data["cep"]}', '{$telefone}')";
+            $sql = "INSERT INTO clientes(`razao_social`,`cpf_cnpj`, `inscricao_estadual`, `logradouro`, `numero`, `complemento`, `bairro`, `municipio`, `cod_muni_ibge`, `uf`, `cep`, `telefone`) VALUES( '{$data["razao_social"]}', '{$data["cpf_cnpj"]}', '{$data["insc_estadual"]}', '{$data["endereco"]}', '{$data["numero"]}', '{$data["complemento"]}', '{$data["bairro"]}', '{$data["municipio"]}', '{$data["cod_municipio_ibge"]}', '{$data["uf"]}', '{$data["cep"]}', '{$data["tel_contato"]}')";
             if($this->conn->query($sql) === TRUE) {
                 return true;
             }else{
