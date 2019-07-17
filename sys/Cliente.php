@@ -46,8 +46,10 @@ class Cliente extends IncubaMain
         if($client){//existe cliente cadastro com esse cpf/cnpj.
             return "EXISTE!";
         }else{
+            $razao_social = mb_strtoupper($data["razao_social"]);
+            $ie = mb_strtoupper($data["insc_estadual"]);
             //$sql = "INSERT INTO clientes(`razao_social`,`cpf_cnpj`, `inscricao_estadual`, `logradouro`, `numero`, `complemento`, `bairro`, `municipio`, `cod_muni_ibge`, `uf`, `cep`, `telefone`) VALUES( '{$razao_social}', '{$cpf_cnpj}', '{$ie}', '{$logradouro}', '{$num}', '{$comp}', '{$bairro}', '{$municipio}', '{$data["cod_municipio_ibge"]}', '{$data["uf"]}', '{$data["cep"]}', '{$telefone}')";
-            $sql = "INSERT INTO clientes(`razao_social`,`cpf_cnpj`, `inscricao_estadual`, `logradouro`, `numero`, `complemento`, `bairro`, `municipio`, `cod_muni_ibge`, `uf`, `cep`, `telefone`) VALUES( '{$data["razao_social"]}', '{$data["cpf_cnpj"]}', '{$data["insc_estadual"]}', '{$data["endereco"]}', '{$data["numero"]}', '{$data["complemento"]}', '{$data["bairro"]}', '{$data["municipio"]}', '{$data["cod_municipio_ibge"]}', '{$data["uf"]}', '{$data["cep"]}', '{$data["tel_contato"]}')";
+            $sql = "INSERT INTO clientes(`razao_social`,`cpf_cnpj`, `inscricao_estadual`, `logradouro`, `numero`, `complemento`, `bairro`, `municipio`, `cod_muni_ibge`, `uf`, `cep`, `telefone`) VALUES( '{$razao_social}', '{$data["cpf_cnpj"]}', '{$ie}', '{$data["endereco"]}', '{$data["numero"]}', '{$data["complemento"]}', '{$data["bairro"]}', '{$data["municipio"]}', '{$data["cod_municipio_ibge"]}', '{$data["uf"]}', '{$data["cep"]}', '{$data["tel_contato"]}')";
             if($this->conn->query($sql) === TRUE) {
                 return true;
             }else{
