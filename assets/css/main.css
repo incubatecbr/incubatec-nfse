@@ -155,8 +155,7 @@ label{
   cursor: pointer;
 }
 
-/* input{
-  text-transform: uppercase;
-} */
-
+#inc, #rep{
+  cursor: pointer;
+}
 

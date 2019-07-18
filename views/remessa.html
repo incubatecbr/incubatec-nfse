@@ -75,7 +75,21 @@ $(document).ready(function () {
                         }else if(data.indexOf('sucess') !=  -1){
                             $.alert({type: 'green',title: 'Sucesso!', content: data});
                         }else{
-                            console.log(data);
+                            console.log( data );
+                            var t = data.split("/");
+                            console.log(t);
+                            //window.location = data;
+                            //console.log(window.location.href);
+                            var a = document.createElement('a');
+                            
+                              a.href = window.location.href+'/_remessa/'+t[5];
+                              a.download = t[5];
+                              document.body.append(a);
+                              a.click();
+                              a.remove();
+                            
+                            //console.log(data);
+                            //window.location = "donwload.php?filename="+data+"";
                         }
                         
                     }

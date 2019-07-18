@@ -2,10 +2,18 @@
 
 
 $(document).ready(function () {
-    let content = document.getElementById("content");
-    let titlePage = document.getElementById("title-page");
-    titlePage.innerHTML = 'Gerador de Arquivos Mestre, Identificação e Destinatario.';
-    content.innerHTML = "<h1 class='text-center my-5'>Desenvolvido por Incubatec</h1>";
+    const content = document.getElementById("content");
+    const titlePage = document.getElementById("title-page");
+    //titlePage.innerHTML = 'Incuba NFe v1.0';
+    //content.innerHTML = "<h1 class='text-center my-5'>Desenvolvido por Incubatec</h1>";
+    let pIndex = './views/'+'pagina-inicial.html';
+    $("#content").load(pIndex, function (response, status, xhr) {
+        if (status == "error") {//Se não encontrar pagina na pasta VIEW.
+            var msg = "Desculpe, mas houve um erro: ";
+            $("#content").html(msg + xhr.status + " " + xhr.statusText);
+        }
+        
+    });
 
 });
 
