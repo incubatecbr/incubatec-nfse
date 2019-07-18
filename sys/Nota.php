@@ -148,6 +148,8 @@ class Nota extends IncubaMain{
      * @return void
      */
     public function generateRemessa(){
+      
+
         $begin = $_POST['data']['ano'].'-'.$_POST['data']['mes'].'-01';
         $end = $_POST['data']['ano'].'-'.$_POST['data']['mes'].'-31';
         $modelo = $_POST['data']['modelo'];
@@ -155,12 +157,7 @@ class Nota extends IncubaMain{
         if(!$notas):
            return false;
         endif;
-        // echo "<pre>";
-        // print_r($notas);
-        // echo "</pre>";die();
-        //$cliente = $this->_dataCliente($notas[0]['cod_consumidor_cliente']);  
-        //var_dump($cliente);
-        //die();
+        $iden = $this->createIdenficacao();
         $emitente = $this->_dataEnterprise();
         $cnpj = Util::replaceString($emitente['cnpj']);
         $f = ['D', 'M', 'I'];
@@ -169,8 +166,100 @@ class Nota extends IncubaMain{
         foreach($f as $k => $v){
             $files[$k] = $this->createFileName($emitente['uf'], $cnpj, $notas[0]['modelo'], $notas[0]['serie'], $notas[0]['ano_mes_apuracao'], $notas[0]['situacao_doc'], $v  );
         }
+        
         $doc_fiscal_destinatario = $this->createFileDestinatario($notas, $files[0]);//0 = Destinatario; 1 = Mestre; 2 = Item;
+        $doc_fiscal_mestre = $this->createFileMestre($notas, $files[1],  $emitente);
         $doc_fiscal_item = $this->createFileItem($notas, $files[2]);
+        if( ($doc_fiscal_destinatario == true) AND ($doc_fiscal_mestre == TRUE) AND ($doc_fiscal_item == TRUE) ){
+            //return "Arquivos gerados com sucesso";
+            
+            //$source_path = "_remessa/";
+            $z = Util::testeZip();
+         
+
+            if(file_exists($z)){  
+                // push to download the zip  
+                header('Content-type: application/zip');  
+                header('Content-Disposition: attachment; filename="'.$z.'"');
+                header('Content-Length: '.filesize($z));
+                header('Pragma: no-cache');
+                //ob_clean();
+                //flush();
+                //readfile($z);
+                //$a = dirname(__DIR__).'/_remessa/notas.zip';
+                echo $z;
+                     
+                // remove zip file is exists in temp path  
+                //unlink($zip_name);  
+                //echo "Existe!";
+            }
+            //return $z;
+            //return "Arquivos gerados com sucesso";
+        }else{
+            return "error[ {$doc_fiscal_destinatario}, {$doc_fiscal_mestre}, {$doc_fiscal_item}]";
+        }
+        
+        
+    }
+
+    public function createFileMestre($notas, $filepath, $emitente){
+        $fileOpen = fopen($filepath, "w+") or die("Não foi possivel abrir!");
+        if(!$fileOpen)://debug..
+            echo "<script>alert('NAO FOI POSSIVEL CRIAR ARQUIVO -> {$tipo}')</script>";
+            die();
+        endif;
+        if(!$emitente)://debug..
+            echo "<script>alert('NAO EXISTE EMITENTE')</script>";
+            die();
+        endif;
+        
+        $cnpj_e = Util::replaceString($emitente['cnpj']);
+        for ($i=0; $i < count($notas); $i++) { 
+            $cliente = $this->_dataCliente($notas[$i]['cod_consumidor_cliente']);
+            $cpf_cnpj = Util::str_pad_unicode($cliente['cpf_cnpj'], 14, '0', STR_PAD_LEFT);
+            if($cliente['inscricao_estadual'] == 'ISENTO'){
+                $ie = Util::str_pad_unicode($cliente['inscricao_estadual'], 14);
+            }else{
+                $ie = Util::str_pad_unicode($cliente['inscricao_estadual'], 14, '0',  STR_PAD_LEFT);
+            }
+            $rzs = Util::str_pad_unicode($cliente['razao_social'], 35);
+            $clas_con = '0';
+            $grp_ten = '00';
+            $cod_id_consu = $cliente['id'];
+            //---
+            $vlr_total_nf = Util::str_pad_unicode($notas[$i]['num_nota'], 12, '0', STR_PAD_LEFT);//valor total da nota ( campo 14).
+            $bc_icm = $vlr_total_nf;//BC ICMS( campo 15).
+            $icms = '000000000000';//ICMS destacado (campo 16).
+            //---
+            $op_i = '000000000000';
+            $outros_v = '000000000000';
+            $id = intval($notas[$i]['num_nota']);
+            $ref_item = $this->getCountItensById($id);
+            $ref_item = Util::str_pad_unicode($ref_item, 9, '0', STR_PAD_LEFT);
+            $num_ter_cons = '000000000000';
+            $sub_c = '00';
+            $num_ter_prin = '000000000000';
+            $num_cod_fat = '                    ';
+            $dt_leit_ant = '00000000';
+            $dt_leit_atu = '00000000';
+            $banco32 = '                                                  ';//50
+            $banco33 = '00000000';//8
+            $inf_add = '                              ';
+            $banco35 = '     ';
+            //---hash 13
+            $cod_auth_dig13 = $cpf_cnpj.$notas[$i]['num_nota'].$vlr_total_nf.$bc_icm.$icms.$notas[$i]['data_emissao_nf'].$cnpj_e;
+            $cod_auth_dig13 = Util::generateMd5($cod_auth_dig13);
+            //---hash 36
+            $cod_auth_dig36 = $cpf_cnpj.$ie.$rzs.$cliente['uf'].$clas_con.$notas[$i]['fase_utilizacao'].$grp_ten.$cod_id_consu.$notas[$i]['data_emissao_nf'].$notas[$i]['modelo'].$notas[$i]['serie'].$notas[$i]['num_nota'].$cod_auth_dig13.$vlr_total_nf.$bc_icm.$icms.$op_i.$outros_v.$notas[$i]['situacao_doc'].$notas[$i]['ano_mes_apuracao'].$ref_item.$num_ter_cons.$notas[$i]['ind_tipo_cpf_cnpj'].$notas[$i]['tipo_cliente'].$sub_c.$num_ter_prin.$cnpj_e.$num_cod_fat.$vlr_total_nf.$dt_leit_ant.$dt_leit_atu.$banco32.$banco33.$inf_add.$banco35;
+            $cod_auth_dig36 = Util::generateMd5($cod_auth_dig36);
+            //----row
+            $row = $cpf_cnpj.$ie.$rzs.$cliente['uf'].$clas_con.$notas[$i]['fase_utilizacao'].$grp_ten.$cod_id_consu.$notas[$i]['data_emissao_nf'].$notas[$i]['modelo'].$notas[$i]['serie'].$notas[$i]['num_nota'].$cod_auth_dig13.$vlr_total_nf.$bc_icm.$icms.$op_i.$outros_v.$notas[$i]['situacao_doc'].$notas[$i]['ano_mes_apuracao'].$ref_item.$num_ter_cons.$notas[$i]['ind_tipo_cpf_cnpj'].$notas[$i]['tipo_cliente'].$sub_c.$num_ter_prin.$cnpj_e.$num_cod_fat.$vlr_total_nf.$dt_leit_ant.$dt_leit_atu.$banco32.$banco33.$inf_add.$banco35.$cod_auth_dig36;
+            //escreve no arquivo.
+            $nRow = mb_convert_encoding($row, "ISO-8859-1", "UTF-8");//linha convertida para ISO-8859-1
+            fwrite($fileOpen, $nRow.PHP_EOL);
+        }
+        fclose($fileOpen);
+        return true;
     }
 
     /**
@@ -193,22 +282,12 @@ class Nota extends IncubaMain{
             $ie = Util::str_pad_unicode($cliente['inscricao_estadual'], 14);
             $rzs = Util::str_pad_unicode($cliente['razao_social'], 35);
             $clas_con = '0';
-            $fase_uti = '4';
             $grp_ten = '00';
             $cod_id_consu = $cliente['id'];
-            $dt_emissao = ' ';
-            $modelo = ' ';
-            $serie = ' ';
-            $num_nota = ' ';
-            $cod_auth_dig13 = ' ';
-            $cod_auth_dig13 = ' ';
-            $vlr_total = '';
-            $bc_icms = '';
-            $icms_destacado = '';
-            $op_isentas = '';
+        
             $id = intval($notas[$i]['num_nota']);
             $itens = $this->getItensById($id);
-            
+        
             foreach ($itens as $key => $val) {
                 $num_ordem_item = Util::str_pad_unicode( ($key+1) , 3, '0', STR_PAD_LEFT);//numero ordem do item
                 $cod_item = Util::str_pad_unicode($val['cod_item'], 10);//codigo do item formatado com 10 caracteres
@@ -224,24 +303,25 @@ class Nota extends IncubaMain{
                 $op_i = '00000000000';
                 $outros_v = '00000000000';
                 $aliq = '0000';
-                $num_contr = '000000000000000';
-                $qntFatu = '000000000100';
+                $num_contr = '               ';
+                $qntFatu = '000000001000';
                 $tarifa = '00000000000';
                 $ali_pis = '000000';
                 $pis_pas = '00000000000';
                 $aliq_c = '000000';
-                $cof = '00000000000';
+                $cofins = '00000000000';
 
-                $row = $cpf_cnpj.$cliente['uf'].$clas_con.$notas[$i]['fase_utilizacao'].$grp_ten.$notas[$i]['data_emissao_nf'].$notas[$i]['modelo'].$notas[$i]['serie'].$notas[$i]['num_nota'].$notas[$i]['cfop'].$num_ordem_item.$cod_item.$des_item.$notas[$i]['cfop'].$unidade.$qntContr.$qntMedi.$valor_total_item.$desc.$acres.$bc_icms.$icms.$op_i.$outros_v.$aliq.$notas[$i]['situacao_doc'].$notas[$i]['ano_mes_apuracao'].$num_contr.$qntFatu.$tarifa.$ali_pis.$pis_pas.$cof.' 00     ';
+                $row = $cpf_cnpj.$cliente['uf'].$clas_con.$notas[$i]['fase_utilizacao'].$grp_ten.$notas[$i]['data_emissao_nf'].$notas[$i]['modelo'].$notas[$i]['serie'].$notas[$i]['num_nota'].$notas[$i]['cfop'].$num_ordem_item.$cod_item.$des_item.$notas[$i]['cfop'].$unidade.$qntContr.$qntMedi.$valor_total_item.$desc.$acres.$bc_icms.$icms.$op_i.$outros_v.$aliq.$notas[$i]['situacao_doc'].$notas[$i]['ano_mes_apuracao'].$num_contr.$qntFatu.$tarifa.$ali_pis.$pis_pas.$aliq_c.$cofins.' 00     ';
 
                 $cod_auth_dig = Util::generateMd5($row);
                 $rowCode = $row.$cod_auth_dig;
-                fwrite($fileOpen, "{$rowCode}\n");
+                $nRow = mb_convert_encoding($rowCode, "ISO-8859-1", "UTF-8");//linha convertida para ISO-8859-1
+                fwrite($fileOpen, $nRow.PHP_EOL);
             }
             
         }
         fclose($fileOpen);
-        
+        return true;
     }
 
     /**
@@ -269,14 +349,30 @@ class Nota extends IncubaMain{
             $tel_ = Util::str_pad_unicode($cliente['telefone'], 12);
             $mun_ = Util::str_pad_unicode($cliente['municipio'], 30);
             //linha do arquivo ( CPF_CNPJ, INSC_ESTADUAL, RAZAO_SOCIAL, LOGRADOURO, NUMERO, COMPLEMENTO, CEP, BAIRRO, MUNICIPIO, UF, COD_CLIENTE, NUM_TERMINAL, UF_HABILITAÇAO, DT_EMISSAO, MODELO, SERIE, NUMERO_NOTA, COD_MUNI, BANCOS, COD_AUTENTICAÇÃO).            
-            $row = $cpf_.$ie_.$rzs_.$log_.$num_.$comp_.$cliente['cep'].$bai_.$mun_.$cliente['uf'].$tel_.$cliente['id'].'              '.$notas[$i]['data_emissao_nf'].$notas[$i]['modelo'].$notas[$i]['serie'].$notas[$i]['num_nota'].$cliente['cod_muni_ibge'].'     ';
+            $row = $cpf_.$ie_.$rzs_.$log_.$num_.$comp_.$cliente['cep'].$bai_.$mun_.$cliente['uf'].$tel_.$cliente['id'].$tel_.'  '.$notas[$i]['data_emissao_nf'].$notas[$i]['modelo'].$notas[$i]['serie'].$notas[$i]['num_nota'].$cliente['cod_muni_ibge'].'     ';
             $cod_auth_dig = Util::generateMd5($row);
             $rowCode = $row.$cod_auth_dig;
-            fwrite($fileOpen, "{$rowCode}\n");//escreve a linha no arquivo
+            $nRow = mb_convert_encoding($rowCode, "ISO-8859-1", "UTF-8");//linha convertida para ISO-8859-1
+            fwrite($fileOpen, $nRow.PHP_EOL);//escreve a linha no arquivo
         }
         fclose($fileOpen);//fecha o arquivo.
+        return true;
     }
 
+    public function getCountItensById($id_nota){
+        if(!$id_nota)://debug.
+            print_r("ID vazio.");
+            die();
+        endif;
+        $sql = "SELECT COUNT(*) as qt FROM item_nota WHERE id_nota = {$id_nota};";
+        $result = $this->conn->query($sql);
+        if ($result->num_rows > 0) {
+            $itens = $result->fetch_assoc();
+            return $itens['qt'];
+        }else{
+            return false;
+        }
+    }
 
     /**
      * Função para retornar as notas com base na data e no modelo.
@@ -303,8 +399,8 @@ class Nota extends IncubaMain{
         $sql = "SELECT cod_item, descricao, valor_item, tipo_uni_med FROM item_nota WHERE id_nota = {$id_nota}";
         $result = $this->conn->query($sql);
         if ($result->num_rows > 0) {
-            $notas = mysqli_fetch_all ($result, MYSQLI_ASSOC);
-            return $notas;
+            $itens = mysqli_fetch_all ($result, MYSQLI_ASSOC);
+            return $itens;
         }else{
             return false;
         }

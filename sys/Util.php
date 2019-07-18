@@ -3,6 +3,40 @@
 class Util
 {
 
+    public static function testeZip(){
+        global $APP_PATH;
+        // Normaliza o caminho do diretório a ser compactado
+        //$source_path = "_remessa/";
+        $source_path = realpath("_remessa/");
+        // Caminho com nome completo do arquivo compactado
+        // Nesse exemplo, será criado no mesmo diretório de onde está executando o script
+        //$zip_file = dirname(__DIR__).$source_path.'.zip';
+        $zip_file = $APP_PATH['remessa'].'notas1.zip';
+        // Inicializa o objeto ZipArchive
+        $zip = new ZipArchive();
+        $zip->open($zip_file, ZipArchive::CREATE | ZipArchive::OVERWRITE);
+        $files = new RecursiveIteratorIterator(
+            new RecursiveDirectoryIterator($APP_PATH['remessa']),
+            RecursiveIteratorIterator::LEAVES_ONLY
+        );
+        foreach ($files as $name => $file) {
+            // Pula os diretórios. O motivo é que serão inclusos automaticamente
+            if (!$file->isDir()) {
+            // Obtém o caminho normalizado da iteração corrente
+            $file_path = $file->getRealPath();
+            // Obtém o caminho relativo do mesmo.
+            $relative_path = substr($file_path, strlen($source_path) + 1);
+            // Adiciona-o ao objeto para compressão
+            $zip->addFile($file_path, $relative_path);
+            }
+        }
+        //Fecha o objeto. Necessário para gerar o arquivo zip final.
+        $zip->close();
+        //Retorna o caminho completo do arquivo gerado
+        return $zip_file;
+    }
+
+
     /**
      * Função para encryptar hash MD5
      * @param String $row

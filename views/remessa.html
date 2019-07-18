@@ -32,6 +32,11 @@
             </select>
         </div>
     </div>
+    
+    <div class="divLoader" id="spinner-loader" style="display:none;">
+        <div class="mx-auto my-auto spinner-loader"></div>
+    </div>
+
     <div class="row">
         <div class="form-group col-sm-3 mx-auto">
             <button type="submit" class="btn btn-success">Gerar Arquivo</button>
@@ -54,20 +59,25 @@ $(document).ready(function () {
                 alert('Por favor, escolha um modelo.');
         }else{
             //let mes = $("#mes").val();
-            let dados = {mes: $("#mes").val(), ano: $("#ano").val() ,modelo:$("#modelo").val()};
+            let dados = {mes: $("#mes").val(), ano: $("#ano").val(), modelo:$("#modelo").val()};
             //console.log(data);
             $.ajax({
                     type: "POST",
                     url: "",
                     data: {class: 'Nota', action: 'generateRemessa', data: dados },
                     error: function () {alert("Não foi possível atender sua requisição.");},
-                    //beforeSend: function () {$("#spinner-loader").show();},//carrega spinner
+                    beforeSend: function () {$("#spinner-loader").show();},//carrega spinner
                     success: function (data, textStatus, jqXHR) {
-                        //$("#spinner-loader").hide();
+                        $("#spinner-loader").hide();
                         if(data === false){
-                            alert('Nenhuma nota para esse mês.');
+                            //alert('Nenhuma nota para esse mês.');
+                            $.alert({ type: 'red', title: 'Atenção!', content: data});
+                        }else if(data.indexOf('sucess') !=  -1){
+                            $.alert({type: 'green',title: 'Sucesso!', content: data});
+                        }else{
+                            console.log(data);
                         }
-                        console.log(data);
+                        
                     }
             });
         }
