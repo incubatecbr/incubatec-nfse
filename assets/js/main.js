@@ -55,6 +55,9 @@ $("#menu li").click(function () {
     $(this).children().addClass('active');
     let titleContent = document.getElementById("title-page");
     let title = titlePage( $(this).children().data("menu") );
+    if(title == 'instrucoes'){//apenas para adicionar o caracteres especiais quando a pagina for Instruções.
+        title = 'Instruções';
+    }
     titleContent.innerHTML = title;
     let page = $(this).children().data("menu");
     page = view + page + '.html';
