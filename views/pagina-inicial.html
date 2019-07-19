@@ -4,8 +4,8 @@
 <div class="jumbotron jumbotron-fluid">
     <div class="container">
         <p class="lead">Incuba NFSe é um projeto <a href="https://opensource.org"><u>Open Source</u></a>(Código Aberto) livre para baixar/utilizar e modificar. Criado para emissão de: <u>Nota Fiscal de Serviço de Telecomunicações(modelo 22)</u> e <u>Nota Fiscal de Serviço de Comunicações(modelo 21)</u>. Regulamentado e embasado no <strong>CONVÊNIO ICMS 115/03</strong> para mais informações sobre o convênio <a target="_blank" href="https://www.confaz.fazenda.gov.br/legislacao/convenios/2003/CV115_03">clique aqui</a>.</p>
-        <p class="lead">De acordo com pesquisas realizadas pela <a target="_blank" href="http://incubatec.ne.br">Incubatec</a>, foi constatado a falta de um software gratuito para a emissão de notas fiscais eletrônicas dos serviços de Comunicação (modelo 21) e de Telecomunicação (modelo 22). Por isso a <a target="_blank" href="http://incubatec.ne.br">Incubatec</a> decidiu incubar esse projeto, visando facilitar a emissão para as pequenas empresas. O sistema foi desenvolvido com base nas normas do Convênio ICMS 115/03, publicado no DOU de 17.12.03.</p>
-        <p class="lead">Para começar a utilizar o sistema siga as instruções no menu <a href="">instruções</a>.</p>
+        <p class="lead">De acordo com pesquisas realizadas pela <a target="_blank" href="http://incubatec.net.br">Incubatec</a>, foi constatado a falta de um software gratuito para a emissão de notas fiscais eletrônicas dos serviços de Comunicação (modelo 21) e de Telecomunicação (modelo 22). Por isso a <a target="_blank" href="http://incubatec.ne.br">Incubatec</a> decidiu incubar esse projeto, visando facilitar a emissão para as pequenas empresas. O sistema foi desenvolvido com base nas normas do Convênio ICMS 115/03, publicado no DOU de 17.12.03.</p>
+        <p class="lead">Para começar a utilizar o sistema siga as instruções no menu <a href="#" id="i">instruções</a>.</p>
         <div id="inc" class="row justify-content-center">
             <div class="col-sm-2">
                 <img src="assets/img/incubatec3d.svg">
@@ -32,6 +32,18 @@
         });
         $("#rep").on("click", function(){
             window.open("https://github.com/igorraphael/incubatec-nf");
+        });
+        //carrega a pagina de instruções
+        $("#i").on("click", function(e){
+            e.preventDefault();
+            let page = './views/instrucoes.html';
+            $("#content").load(page, function (response, status, xhr) {
+                if (status == "error") {//Se não encontrar pagina na pasta VIEW.
+                    var msg = "Desculpe, mas houve um erro: ";
+                    $("#content").html(msg + xhr.status + " " + xhr.statusText);
+                }
+            });
+           
         });
     });
 </script>
