@@ -2,7 +2,18 @@
 
 class Util
 {
-
+    /**
+     * Função para limpar a pasta de _remessa.
+     */
+    public static function cleaningFolderRemessa(){
+        $folder = '_remessa';
+        $files = glob($folder . '/*');
+        foreach($files as $file){
+            if(is_file($file)){
+                unlink($file);
+            }
+        }
+    }
     public static function testeZip(){
         global $APP_PATH;
         // Normaliza o caminho do diretório a ser compactado
@@ -10,8 +21,8 @@ class Util
         $source_path = realpath("_remessa/");
         // Caminho com nome completo do arquivo compactado
         // Nesse exemplo, será criado no mesmo diretório de onde está executando o script
-        //$zip_file = dirname(__DIR__).$source_path.'.zip';
-        $zip_file = $APP_PATH['remessa'].'notas1.zip';
+        $d = date('Ymd');
+        $zip_file = $APP_PATH['remessa']."NFSe-{$d}.zip";
         // Inicializa o objeto ZipArchive
         $zip = new ZipArchive();
         $zip->open($zip_file, ZipArchive::CREATE | ZipArchive::OVERWRITE);

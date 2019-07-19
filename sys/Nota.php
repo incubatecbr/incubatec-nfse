@@ -148,8 +148,9 @@ class Nota extends IncubaMain{
      * @return void
      */
     public function generateRemessa(){
-      
 
+        Util::cleaningFolderRemessa();//Limpa pasta de remessa
+        sleep(2);//aguardar 2 segundos para garantir que os arquivos foram apagados.
         $begin = $_POST['data']['ano'].'-'.$_POST['data']['mes'].'-01';
         $end = $_POST['data']['ano'].'-'.$_POST['data']['mes'].'-31';
         $modelo = $_POST['data']['modelo'];
@@ -171,36 +172,23 @@ class Nota extends IncubaMain{
         $doc_fiscal_mestre = $this->createFileMestre($notas, $files[1],  $emitente);
         $doc_fiscal_item = $this->createFileItem($notas, $files[2]);
         if( ($doc_fiscal_destinatario == true) AND ($doc_fiscal_mestre == TRUE) AND ($doc_fiscal_item == TRUE) ){
-            //return "Arquivos gerados com sucesso";
-            
-            //$source_path = "_remessa/";
-            $z = Util::testeZip();
-         
-
-            if(file_exists($z)){  
-                // push to download the zip  
-                header('Content-type: application/zip');  
-                header('Content-Disposition: attachment; filename="'.$z.'"');
-                header('Content-Length: '.filesize($z));
-                header('Pragma: no-cache');
-                //ob_clean();
-                //flush();
-                //readfile($z);
-                //$a = dirname(__DIR__).'/_remessa/notas.zip';
-                echo $z;
-                     
-                // remove zip file is exists in temp path  
-                //unlink($zip_name);  
-                //echo "Existe!";
+            $zip = Util::testeZip();
+            if(file_exists($zip)){
+                header('Content-type: application/zip');
+                header("Content-Transfer-Encoding: Binary");  
+                header('Content-Disposition: attachment; filename="'.$zip.'"');
+                header('Content-Length: '.filesize($zip));
+                header('Pragma: no-cache'); 
+                return $zip;
+            }else{
+                return 'Nao foi possivel criar arquivo zip';
             }
-            //return $z;
-            //return "Arquivos gerados com sucesso";
         }else{
             return "error[ {$doc_fiscal_destinatario}, {$doc_fiscal_mestre}, {$doc_fiscal_item}]";
         }
         
-        
     }
+
 
     public function createFileMestre($notas, $filepath, $emitente){
         $fileOpen = fopen($filepath, "w+") or die("Não foi possivel abrir!");
@@ -225,9 +213,10 @@ class Nota extends IncubaMain{
             $rzs = Util::str_pad_unicode($cliente['razao_social'], 35);
             $clas_con = '0';
             $grp_ten = '00';
-            $cod_id_consu = $cliente['id'];
+            $cod_id_consu = Util::str_pad_unicode($cliente['id'], 12);
+            $tel = Util::str_pad_unicode($notas[$i]['telefone_cliente'], 12);
             //---
-            $vlr_total_nf = Util::str_pad_unicode($notas[$i]['num_nota'], 12, '0', STR_PAD_LEFT);//valor total da nota ( campo 14).
+            $vlr_total_nf = Util::str_pad_unicode($notas[$i]['valor_total_nf'], 12, '0', STR_PAD_LEFT);//valor total da nota ( campo 14).
             $bc_icm = $vlr_total_nf;//BC ICMS( campo 15).
             $icms = '000000000000';//ICMS destacado (campo 16).
             //---
@@ -236,9 +225,11 @@ class Nota extends IncubaMain{
             $id = intval($notas[$i]['num_nota']);
             $ref_item = $this->getCountItensById($id);
             $ref_item = Util::str_pad_unicode($ref_item, 9, '0', STR_PAD_LEFT);
-            $num_ter_cons = '000000000000';
+            //$num_ter_cons = '000000000000';
+            $num_ter_cons = $tel;
             $sub_c = '00';
-            $num_ter_prin = '000000000000';
+            //$num_ter_prin = '000000000000';
+            $num_ter_prin = $tel;
             $num_cod_fat = '                    ';
             $dt_leit_ant = '00000000';
             $dt_leit_atu = '00000000';
@@ -279,11 +270,11 @@ class Nota extends IncubaMain{
         for ($i=0; $i < count($notas); $i++) { 
             $cliente = $this->_dataCliente($notas[$i]['cod_consumidor_cliente']);
             $cpf_cnpj = Util::str_pad_unicode($cliente['cpf_cnpj'], 14, '0', STR_PAD_LEFT);
-            $ie = Util::str_pad_unicode($cliente['inscricao_estadual'], 14);
+            //$ie = Util::str_pad_unicode($cliente['inscricao_estadual'], 14);
             $rzs = Util::str_pad_unicode($cliente['razao_social'], 35);
             $clas_con = '0';
             $grp_ten = '00';
-            $cod_id_consu = $cliente['id'];
+            $cod_id_consu = Util::str_pad_unicode($cliente['id'], 12);
         
             $id = intval($notas[$i]['num_nota']);
             $itens = $this->getItensById($id);
@@ -336,11 +327,17 @@ class Nota extends IncubaMain{
             echo "<script>alert('NAO FOI POSSIVEL CRIAR ARQUIVO -> {$tipo}')</script>";
             die();
         endif;
+
         
         for ($i=0; $i < count($notas); $i++) { 
             $cliente = $this->_dataCliente($notas[$i]['cod_consumidor_cliente']);  
             $cpf_ = Util::str_pad_unicode($cliente['cpf_cnpj'], 14, '0', STR_PAD_LEFT);
-            $ie_ = Util::str_pad_unicode($cliente['inscricao_estadual'], 14);
+            //$ie_ = Util::str_pad_unicode($cliente['inscricao_estadual'], 14);
+            if($cliente['inscricao_estadual'] == 'ISENTO'){
+                $ie_ = Util::str_pad_unicode($cliente['inscricao_estadual'], 14);
+            }else{
+                $ie_ = Util::str_pad_unicode($cliente['inscricao_estadual'], 14, '0',  STR_PAD_LEFT);
+            }
             $rzs_ = Util::str_pad_unicode($cliente['razao_social'], 35);
             $log_ = Util::str_pad_unicode($cliente['logradouro'], 45);
             $num_ = Util::str_pad_unicode($cliente['numero'], 5, '0', STR_PAD_LEFT);
@@ -348,8 +345,9 @@ class Nota extends IncubaMain{
             $bai_ = Util::str_pad_unicode($cliente['bairro'], 15);
             $tel_ = Util::str_pad_unicode($cliente['telefone'], 12);
             $mun_ = Util::str_pad_unicode($cliente['municipio'], 30);
+            $id_c = Util::str_pad_unicode($cliente['id'], 12);
             //linha do arquivo ( CPF_CNPJ, INSC_ESTADUAL, RAZAO_SOCIAL, LOGRADOURO, NUMERO, COMPLEMENTO, CEP, BAIRRO, MUNICIPIO, UF, COD_CLIENTE, NUM_TERMINAL, UF_HABILITAÇAO, DT_EMISSAO, MODELO, SERIE, NUMERO_NOTA, COD_MUNI, BANCOS, COD_AUTENTICAÇÃO).            
-            $row = $cpf_.$ie_.$rzs_.$log_.$num_.$comp_.$cliente['cep'].$bai_.$mun_.$cliente['uf'].$tel_.$cliente['id'].$tel_.'  '.$notas[$i]['data_emissao_nf'].$notas[$i]['modelo'].$notas[$i]['serie'].$notas[$i]['num_nota'].$cliente['cod_muni_ibge'].'     ';
+            $row = $cpf_.$ie_.$rzs_.$log_.$num_.$comp_.$cliente['cep'].$bai_.$mun_.$cliente['uf'].$tel_.$id_c.$tel_.$cliente['uf'].$notas[$i]['data_emissao_nf'].$notas[$i]['modelo'].$notas[$i]['serie'].$notas[$i]['num_nota'].$cliente['cod_muni_ibge'].'     ';
             $cod_auth_dig = Util::generateMd5($row);
             $rowCode = $row.$cod_auth_dig;
             $nRow = mb_convert_encoding($rowCode, "ISO-8859-1", "UTF-8");//linha convertida para ISO-8859-1
