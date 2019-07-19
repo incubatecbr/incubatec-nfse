@@ -1,3 +1,4 @@
+
 <form id="form-nf">
     <div class="alert alert-primary" role="alert">
         Preencha o CPF/CNPJ de um cliente cadastrado no sistema.
@@ -116,7 +117,7 @@
         </div>
         <div class="form-group col-2">
             <label for="qtn_faturada_servico">Quantidade Faturada:</label>
-            <input type="text" class="form-control" name="qtn_faturada_servico" id="qtn_faturada_servico" maxlength="11" value="1,00" readonly>
+            <input type="text" class="form-control" name="qtn_faturada_servico" id="qtn_faturada_servico" maxlength="11" value="1,00" data-toggle="popover" data-trigger="focus" title="Observação:" data-content="Informar  a  quantidade  de  serviço  faturado  do  item (tais  como, minutos  de  franquia;  tempo  de  ligações; velocidade  de  internet  em  Mbps;  número  de  canais  de  TV;  etc.)">
         </div>
         <div class="form-group col-2">
             <label for="bc_icms_servico">Base Cálculo ICMS:</label>
@@ -160,9 +161,16 @@
     $("#dt_emissao").mask("00/00/0000");
     $("#ano_mes_apu").mask("00/00");
     $("#cfop").mask("0000");
-
+    // $("#qtn_faturada_servico").click(function (){
+    //     console.log('opaaaaa');
+    //     $(this).popover();
+    // });
+   
     //document ready
     $(document).ready(function () {
+        $("#qtn_faturada_servico").mouseover(function(){
+            $(this).popover();
+        });
         //Preencher Base de Calculo com o mesmo valor do total.
         $("#total_service").on("keyup", function(){
             $("#bc_icms_servico").val( $(this).val() );

@@ -38,16 +38,17 @@
     </div>
 
     <div class="row">
-        <div class="form-group col-sm-3 mx-auto">
-            <button type="submit" class="btn btn-success">Gerar Arquivo</button>
+        <div class="form-group col-sm-3 mx-auto" id="divButtons">
+            <button type="submit" id="btnGerar" class="btn btn-success">Gerar Remessa</button>
         </div>
     </div>
 </form>
 <script>
 $(document).ready(function () {
+
     //remove class
     $("#form-remessa select").focus(function () {
-            $(this).removeClass("inp-error");
+        $(this).removeClass("inp-error");
     });
     $("#form-remessa").on("submit", function(event){
         event.preventDefault();
@@ -58,40 +59,29 @@ $(document).ready(function () {
                 $("#modelo").addClass("inp-error");
                 alert('Por favor, escolha um modelo.');
         }else{
-            //let mes = $("#mes").val();
             let dados = {mes: $("#mes").val(), ano: $("#ano").val(), modelo:$("#modelo").val()};
-            //console.log(data);
             $.ajax({
                     type: "POST",
                     url: "",
                     data: {class: 'Nota', action: 'generateRemessa', data: dados },
                     error: function () {alert("Não foi possível atender sua requisição.");},
-                    beforeSend: function () {$("#spinner-loader").show();},//carrega spinner
+                    beforeSend: function () {//carrega spinner
+                        $('#btnGerar').html(`<span class="span-spinner" id="spanSpinner" role="status" aria-hidden="true"></span> Aguarde..`);
+                    },
                     success: function (data, textStatus, jqXHR) {
-                        $("#spinner-loader").hide();
+                        $('#spanSpinner').remove();
+                        $('#btnGerar').html('Pronto!');
                         if(data === false){
-                            //alert('Nenhuma nota para esse mês.');
-                            $.alert({ type: 'red', title: 'Atenção!', content: data});
-                        }else if(data.indexOf('sucess') !=  -1){
-                            $.alert({type: 'green',title: 'Sucesso!', content: data});
+                            $.alert({ type: 'red', title: 'Atenção!', content: 'Nenhuma nota para esse mês.'});
                         }else{
-                            console.log( data );
-                            var t = data.split("/");
-                            console.log(t);
-                            //window.location = data;
-                            //console.log(window.location.href);
-                            var a = document.createElement('a');
-                            
-                              a.href = window.location.href+'/_remessa/'+t[5];
-                              a.download = t[5];
-                              document.body.append(a);
-                              a.click();
-                              a.remove();
-                            
-                            //console.log(data);
-                            //window.location = "donwload.php?filename="+data+"";
+                            let t = data.split("/");
+                            let a = document.createElement('a');
+                            a.href = window.location.href+'/_remessa/'+t[5];
+                            a.download = t[5];
+                            document.body.append(a);
+                            a.click();
+                            a.remove();
                         }
-                        
                     }
             });
         }
