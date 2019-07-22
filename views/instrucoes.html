@@ -1,3 +1,93 @@
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
 <div class="row">
-    <h1>Intruções de uso:</h1>
+    <div class="mx-auto my-3 text-center">
+        <h1>Começe rápido</h1>
+        <p class="text-muted">É simples e de fácil de configurar.</p>
+    </div>
+
+</div>
+<div class="row">
+    <div class="col-sm-2">
+        <div class="nav flex-column nav-pills border-info shadow" id="v-pills-tab" role="tablist"
+            aria-orientation="vertical">
+            <a class="nav-link active " data-toggle="pill" href="#introducao" role="tab"
+                aria-selected="true">Introdução</a>
+            <a class="nav-link" id="" data-toggle="pill" href="#intalacao" role="tab"
+                aria-selected="false">Instalação</a>
+            <a class="nav-link" id="" data-toggle="pill" href="#database" role="tab" aria-selected="false">Cadastros</a>
+            <a class="nav-link" id="" data-toggle="pill" href="#conclusao" role="tab" aria-selected="false">Contribuição</a>
+        </div>
+    </div>
+
+    <div class="col-9 shadow">
+        <div class="tab-content" id="content-doc">
+            <div class="tab-pane fade show active p-3" id="introducao" role="tabpanel">
+                <h6 class="text-justify">Para utilizar esse sistema você precisa necessariamente de um software que
+                    simule um sevidor web respectivamente com as versões descritas nesse documento.
+                    Atualmente existe diversas opções para esse tipo de software, caso você seja um usuário que não
+                    possui conhecimentos prévios sobre esse assunto entre em contato ou procure por um profissional com
+                    conhecimentos necessários.
+                    Dentro as diversas opções indicamos o software <a target="_blank"
+                        href="http://www.wampserver.com/en/">WampServer</a>, o qual é bem simples e possui varios
+                    contéudos na Internet. Os arquivos gerados(Identificação, Arquivo Mestre, Destinatário e Item de documento) por esse sistema serão utilizados no <span class="text-info">Validador</span> que pode ser encontrado através <a target="_blank" href="https://portal.fazenda.sp.gov.br/servicos/nf-comunicacao-energia/Paginas/Downloads.aspx">clicando aqui</a>.</h6>
+                <div class="text-center">
+                    <p class="my-2">Requisitos:</p>
+                    <p class="my-2">PHP: 5.6 ou superior</p>
+                    <p class="my-2">Apache: 2.4</p>
+                    <p class="my-2">MySQL: 5.7</p>
+                </div>
+                <div class="text-justify my-4">
+                    <h3>Baixar/Download</h3>
+                    <h6>Faça o download ou clone diretamente do <a target="_blank" href="https://github.com/igorraphael/incubatec-nf">repositório</a>. Importe o sql do banco
+                        de dados, edite a classe responsável pelo banco de dados( <span class="text-info">Database.php</span> ).</h6>
+                </div>
+                <div class="text-justify">
+                    <h3>Bibliotecas utilizadas</h3>
+                    <p class="display-6 my-2"><a target="_blank" href="https://getbootstrap.com/">Bootstrap</a></p>
+                    <p class="display-6 my-2"><a target="_blank"
+                            href="https://craftpip.github.io/jquery-confirm/">jQuery Confirm</a></p>
+                    <p class="display-6 my-2"><a target="_blank"
+                            href="https://igorescobar.github.io/jQuery-Mask-Plugin/">jQuery Mask Plugin</a></p>
+                    <p class="display-6 my-2"><a target="_blank"
+                            href="https://datatables.net/">Data Tables</a></p>
+                </div>
+
+
+            </div>
+            <div class="tab-pane fade" id="intalacao" role="tabpanel">
+                <div class="text-justify">
+                    <h3>Primeiros passos</h3>
+                    <h6>Após realizar o download, abra o arquivo <span class="text-info">Database.php</span> e edite as
+                        variaveis para conexão com o banco.</h6>
+                    <div class="row col-sm-5">
+                        <nav>
+                            <ol class="breadcrumb">
+                                <li class="breadcrumb-item"><span class="text-primary">IncubaNFSe</span></li>
+                                <li class="breadcrumb-item"><span class="text-primary">sys</span></li>
+                                <li class="breadcrumb-item active" aria-current="page">Database.php</li>
+                            </ol>
+                        </nav>
+                    </div>
+                    <div class="row breadcrumb col-sm-5 mx-auto">
+                        <p>private $server = <span class="text-info">'localhost'</span>;<span class="mx-5 text-info">IP do servidor db</span></p>
+                        <p>private $user = <span class="text-info">'root'</span>; <span class="mx-5 text-info">Usuário do db</span></p>
+                        <p>private $password = <span class="text-info">' '</span>; <span class="mx-5 text-info">Senha do usuário</span></p>
+                        <p>private $db = <span class="text-info">'incubatec_nf'</span>; <span class="mx-5 text-info">Nome do banco</span></p>
+                    </div>
+                    <h6>Importe o banco de dados presente na raiz do repositório <span class="text-info">database-atualizado.sql</span>.</h6>
+                </div>
+            </div>
+            <div class="tab-pane fade" id="database" role="tabpanel">
+                <div class="text-justify">
+                    <h3>Cadastros em gerais</h3>
+                    <h6>Esse sistema(ainda) não possui todos os tipos de validações e verificações nos campos de preenchimento pelo usuário. Portanto é indicado que o usuário preencha completamente todos os campos conforme descrito nas observações. Esse sistema continua em desenvolvimento, caso queria contribuir por favor entre em contato pelo github.</h6>
+                </div>
+            </div>
+            <div class="tab-pane fade" id="conclusao" role="tabpanel">
+                <h3>Contribua para este projeto</h3>
+                <h6>A <a href="" target="_blank">Incubatec</a> inciou esse projeto após encontrar a falta de um software gratuito para as pequenas empresas, com licensa GNU. Caso tenha interesse contribua para o desenvolvimento do mesmo :)</h6>
+            </div>
+        </div>
+    </div>
+
 </div>
