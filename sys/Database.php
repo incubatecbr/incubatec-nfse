@@ -3,9 +3,13 @@
 class Database
 {
 
+    //ip do servidor.
     private $server = 'localhost';
+    //usuário do banco de dados.
     private $user = 'root';
+    //senha do usuário.
     private $password = '';
+    //nome da tabela.
     private $db = 'incubatec_nf';
 
     /**
