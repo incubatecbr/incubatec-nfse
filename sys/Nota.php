@@ -173,13 +173,13 @@ class Nota extends IncubaMain{
         $doc_fiscal_item = $this->createFileItem($notas, $files[2]);
         if( ($doc_fiscal_destinatario == true) AND ($doc_fiscal_mestre == TRUE) AND ($doc_fiscal_item == TRUE) ){
             $zip = Util::testeZip();
+            
             if(file_exists($zip)){
                 header('Content-type: application/zip');
-                header("Content-Transfer-Encoding: Binary");  
                 header('Content-Disposition: attachment; filename="'.$zip.'"');
                 header('Content-Length: '.filesize($zip));
                 header('Pragma: no-cache'); 
-                return $zip;
+                return $zip;//retorna arquivo zip forçando donwload pelo navegador.
             }else{
                 return 'Nao foi possivel criar arquivo zip';
             }
