@@ -30,7 +30,7 @@
         </div>
         <div class="form-group col-2">
             <label for="ano_mes_apu">Ano e mês de apuração:</label>
-            <input type="text" class="form-control" id="ano_mes_apu" name="ano_mes_apu" placeholder="Ex: 19/12">
+            <input type="text" class="form-control" id="ano_mes_apu" name="ano_mes_apu" placeholder="Ex: 19/12" data-toggle="popover" data-trigger="focus" title="Observação:" data-content="Informar os dois ultimos digitos do ano e o mês de apuração, exemplo: 19/12.">
         </div>
         <div class="form-group col-2">
             <label for="situacao_doc">Situação do documento:</label>
@@ -97,7 +97,7 @@
     <div class="form-row">
         <div class="form-group col-2">
             <label for="cod_service">Cód. Serviço:</label>
-            <input type="text" class="form-control" id="cod_service" name="cod_servico" onkeypress="return formatData(event, /[A-Za-z0-9]/);" maxlength="10">
+            <input type="text" class="form-control" id="cod_service" name="cod_servico" onkeypress="return formatData(event, /[A-Za-z0-9]/);" maxlength="10" data-toggle="popover" data-trigger="focus" title="Observação:" data-content="Informar o cód do item com letras e numeros utilizando todos os digitos do campo, exemplo: C552XY999W.">
         </div>
         <div class="form-group col-4">
             <label for="descricao_servico">Descrição:</label>
@@ -117,7 +117,7 @@
         </div>
         <div class="form-group col-2">
             <label for="qtn_faturada_servico">Quantidade Faturada:</label>
-            <input type="text" class="form-control" name="qtn_faturada_servico" id="qtn_faturada_servico" maxlength="11" value="1,00" data-toggle="popover" data-trigger="focus" title="Observação:" data-content="Informar  a  quantidade  de  serviço  faturado  do  item (tais  como, minutos  de  franquia;  tempo  de  ligações; velocidade  de  internet  em  Mbps;  número  de  canais  de  TV;  etc.)">
+            <input type="text" class="form-control" name="qtn_faturada_servico" id="qtn_faturada_servico" maxlength="13" value="1,000" data-toggle="popover" data-trigger="focus" title="Observação:" data-content="Informar  a  quantidade  de  serviço  faturado  do  item (tais  como, minutos  de  franquia;  tempo  de  ligações; velocidade  de  internet  em  Mbps;  número  de  canais  de  TV;  etc).">
         </div>
         <div class="form-group col-2">
             <label for="bc_icms_servico">Base Cálculo ICMS:</label>
@@ -156,21 +156,17 @@
 <script>
     //masks inputs
     $("#total_service").mask("#.##0,00", {reverse: true});
-    $("#qtn_faturada_servico").mask("#,00");
-    //$("#bc_icms_servico").mask("#.##0,00", { reverse: true });
-    $("#dt_emissao").mask("00/00/0000");
+    $("#qtn_faturada_servico").mask("#,000", {reverse: true});
     $("#ano_mes_apu").mask("00/00");
     $("#cfop").mask("0000");
-    // $("#qtn_faturada_servico").click(function (){
-    //     console.log('opaaaaa');
-    //     $(this).popover();
-    // });
    
     //document ready
     $(document).ready(function () {
-        $("#qtn_faturada_servico").mouseover(function(){
-            $(this).popover();
-        });
+        //poppers
+        $("#qtn_faturada_servico").mouseover(function(){ $(this).popover(); });
+        $("#ano_mes_apu").mouseover(function(){ $(this).popover(); });
+        $("#cod_service").mouseover(function(){ $(this).popover(); });
+
         //Preencher Base de Calculo com o mesmo valor do total.
         $("#total_service").on("keyup", function(){
             $("#bc_icms_servico").val( $(this).val() );

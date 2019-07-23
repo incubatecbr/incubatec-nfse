@@ -13,8 +13,8 @@
             <a class="nav-link active " data-toggle="pill" href="#introducao" role="tab"
                 aria-selected="true">Introdução</a>
             <a class="nav-link" id="" data-toggle="pill" href="#intalacao" role="tab"
-                aria-selected="false">Instalação</a>
-            <a class="nav-link" id="" data-toggle="pill" href="#database" role="tab" aria-selected="false">Cadastros</a>
+                aria-selected="false">Configurar DB</a>
+            <a class="nav-link" id="" data-toggle="pill" href="#database" role="tab" aria-selected="false">Como usar</a>
             <a class="nav-link" id="" data-toggle="pill" href="#conclusao" role="tab" aria-selected="false">Contribuição</a>
         </div>
     </div>
@@ -22,14 +22,13 @@
     <div class="col-9 shadow">
         <div class="tab-content" id="content-doc">
             <div class="tab-pane fade show active p-3" id="introducao" role="tabpanel">
-                <h6 class="text-justify">Para utilizar esse sistema você precisa necessariamente de um software que
+                <h6 class="text-justify"><span class="ml-4">Para</span> utilizar esse sistema você precisa necessariamente de um software que
                     simule um sevidor web respectivamente com as versões descritas nesse documento.
                     Atualmente existe diversas opções para esse tipo de software, caso você seja um usuário que não
                     possui conhecimentos prévios sobre esse assunto entre em contato ou procure por um profissional com
                     conhecimentos necessários.
                     Dentro as diversas opções indicamos o software <a target="_blank"
-                        href="http://www.wampserver.com/en/">WampServer</a>, o qual é bem simples e possui varios
-                    contéudos na Internet. Os arquivos gerados(Identificação, Arquivo Mestre, Destinatário e Item de documento) por esse sistema serão utilizados no <span class="text-info">Validador</span> que pode ser encontrado através <a target="_blank" href="https://portal.fazenda.sp.gov.br/servicos/nf-comunicacao-energia/Paginas/Downloads.aspx">clicando aqui</a>.</h6>
+                        href="http://www.wampserver.com/en/">WampServer</a>, o qual é bem simples de facil instalação e contém todos os softwares necessários para um servidor web. Os arquivos gerados(Identificação, Arquivo Mestre, Destinatário e Item de documento) por esse sistema serão utilizados no <span class="text-info">Validador</span> que pode ser encontrado através <a target="_blank" href="https://portal.fazenda.sp.gov.br/servicos/nf-comunicacao-energia/Paginas/Downloads.aspx">clicando aqui</a>.</h6>
                 <div class="text-center">
                     <p class="my-2">Requisitos:</p>
                     <p class="my-2">PHP: 5.6 ou superior</p>
@@ -44,15 +43,12 @@
                 <div class="text-justify">
                     <h3>Bibliotecas utilizadas</h3>
                     <p class="display-6 my-2"><a target="_blank" href="https://getbootstrap.com/">Bootstrap</a></p>
-                    <p class="display-6 my-2"><a target="_blank"
-                            href="https://craftpip.github.io/jquery-confirm/">jQuery Confirm</a></p>
-                    <p class="display-6 my-2"><a target="_blank"
-                            href="https://igorescobar.github.io/jQuery-Mask-Plugin/">jQuery Mask Plugin</a></p>
-                    <p class="display-6 my-2"><a target="_blank"
-                            href="https://datatables.net/">Data Tables</a></p>
+                    <p class="display-6 my-2"><a target="_blank" href="https://craftpip.github.io/jquery-confirm/">jQuery Confirm</a></p>
+                    <p class="display-6 my-2"><a target="_blank" href="https://igorescobar.github.io/jQuery-Mask-Plugin/">jQuery Mask Plugin</a></p>
+                    <p class="display-6 my-2"><a target="_blank" href="https://datatables.net/">Data Tables</a></p>
+                    <h3>API utilizada</h3>
+                    <p class="display-6 my-2"><a target="_blank" href="https://viacep.com.br/">ViaCep</a> - Consulte CEPs de todo Brasil.</p>
                 </div>
-
-
             </div>
             <div class="tab-pane fade" id="intalacao" role="tabpanel">
                 <div class="text-justify">
@@ -78,14 +74,43 @@
                 </div>
             </div>
             <div class="tab-pane fade" id="database" role="tabpanel">
-                <div class="text-justify">
-                    <h3>Cadastros em gerais</h3>
-                    <h6>Esse sistema(ainda) não possui todos os tipos de validações e verificações nos campos de preenchimento pelo usuário. Portanto é indicado que o usuário preencha completamente todos os campos conforme descrito nas observações. Esse sistema continua em desenvolvimento, caso queria contribuir por favor entre em contato pelo github.</h6>
+                <div class="text-justify mb-2">
+                    <p class="h3">Cadastros em gerais<span class="text-danger">*</span></p>
+                    <p class="h6"><span class="ml-4">Esse</span> sistema(ainda) não possui todos os tipos de validações e verificações nos campos de preenchimento pelo usuário. Portanto é indicado que o usuário preencha completamente todos os campos conforme descrito nas observações.</p>
+                    <hr>
+                    <p class="h3">Convênio ICMS 115/03</p>
+                    <p class="h6"><span class="ml-4">Para</span> evitar qualquer problema relacionado ao preenchimento dos dados, ler <a target="_blank" href="https://www.confaz.fazenda.gov.br/legislacao/convenios/2003/CV115_03">convênio ICMS 115/03</a></p>
+                    <hr>
+                    <p class="h3">Tudo pronto e configurado</p>
+                    <p class="h6"><span class="ml-4">Após</span> instalação e importação do banco de dados devidamente concluída é hora de realizar o cadastro da empresa, o mesmo será realizado apenas uma vez e caso necessite alterar os dados basta voltar a tela de cadastro clicar no botão "alterar" e logo em seguida salvar. Há também uma tela para cadastrar os clientes, com campos específicos para geração dos arquivos finais. </p>
+                    <p class="h6 mb-4"><span class="ml-4">E</span> por fim, a tela de nota fiscal, na qual deve-se tomar bastante atenção em seu presente preenchimento. O cliente é localizado pelo seu CPF/CNPJ cadastrado no sistema.</p>
+                    <p class="h3">Cadastrei tudo, e agora?</p>
+                    <p class="h6"><span class="ml-4">Agora</span> é hora de fazer as suas notas! Clique no menu 'Nova nota Fiscal', preencha corretamente todos os campos e conclua. Com isso feito é hora de gerar remessa de arquivos. Clique no menu 'Remessa', escolha o mês e modelo clique sobre o botão gerar e aguarde até o download do NFSe.zip</p>    
+                    <p class="text-center"><em>Arquvios extraídos do ZIP</em></p>
+                    <div class="text-center">
+                        <img class="img-fluid" src="assets/img/files_extracts.jpg">
+                    </div>
+                    <p class="text-center"><em>Arquivo mestre, destinatário e item.</em></p>
+                    <hr>
+                    <p class="h6 mt-4"><span class="ml-4">A</span> partir de agora você deve baixar o <a href="https://portal.fazenda.sp.gov.br/servicos/nf-comunicacao-energia/Paginas/Downloads.aspx" target="_blank">Valida e-Nota Fiscal</a> e carregar o arquivo de identificação. Após carregado, uma nova janela onde você irá carregar o arquivo <strong>Mestre</strong> e caso tudo esteja preenchido corretamente e sem erros, será gerado mais dois arquivos, Y e C. (O arquivo de log sempre vai ser criado mesmo que não exista erros)</p>    
+                    <div class="text-center">
+                        <img class="img-fluid" src="assets/img/valida_ident.jpg">
+                    </div>
+                    <p class="h6 mt-4"><span class="ml-4">Com</span> esses arquivos você transmite o TED.</p>
+                    <div class="text-center">
+                        <img class="img-fluid" src="assets/img/all_files.jpg">
+                    </div>    
                 </div>
             </div>
             <div class="tab-pane fade" id="conclusao" role="tabpanel">
                 <h3>Contribua para este projeto</h3>
-                <h6>A <a href="" target="_blank">Incubatec</a> inciou esse projeto após encontrar a falta de um software gratuito para as pequenas empresas, com licensa GNU. Caso tenha interesse contribua para o desenvolvimento do mesmo :)</h6>
+                <h6>A <a href="http://incubatec.net.br/" target="_blank">Incubatec</a> inciou esse projeto após encontrar a falta de um software gratuito para as pequenas empresas, com licensa GNU. Caso tenha interesse contribua para o desenvolvimento do mesmo :)</h6>
+                <a target="_blank" href="https://github.com/igorraphael/incubatec-nf">
+                    <div class="row justify-content-center mb-5">
+                        <img src="assets/img/git_icon.png">
+                        <h1 class="my-auto">Github</h1>
+                    </div>
+                </a>
             </div>
         </div>
     </div>

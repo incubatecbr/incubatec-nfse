@@ -31,20 +31,14 @@ class Util
             RecursiveIteratorIterator::LEAVES_ONLY
         );
         foreach ($files as $name => $file) {
-            // Pula os diretórios. O motivo é que serão inclusos automaticamente
-            if (!$file->isDir()) {
-            // Obtém o caminho normalizado da iteração corrente
-            $file_path = $file->getRealPath();
-            // Obtém o caminho relativo do mesmo.
-            $relative_path = substr($file_path, strlen($source_path) + 1);
-            // Adiciona-o ao objeto para compressão
-            $zip->addFile($file_path, $relative_path);
+            if (!$file->isDir()) {// Pula os diretórios. O motivo é que serão inclusos automaticamente
+            $file_path = $file->getRealPath(); // Obtém o caminho normalizado da iteração corrente
+            $relative_path = substr($file_path, strlen($source_path) + 1);// Obtém o caminho relativo do mesmo.
+            $zip->addFile($file_path, $relative_path);// Adiciona-o ao objeto para compressão
             }
         }
-        //Fecha o objeto. Necessário para gerar o arquivo zip final.
-        $zip->close();
-        //Retorna o caminho completo do arquivo gerado
-        return $zip_file;
+        $zip->close();//Fecha o objeto. Necessário para gerar o arquivo zip final.
+        return $zip_file; //Retorna o caminho completo do arquivo gerado
     }
 
 
@@ -75,9 +69,7 @@ class Util
             $val = Util::sumValues($service);
             return $val;
         }else{
-            //return $service[2];
             return str_replace (',', '', $service[2]);
-            //return number_format($service[2], 2, '', '');
         }    
     }
     
@@ -102,7 +94,6 @@ class Util
             $sb = str_replace(',', '.', $array[$i][2]); //remove virgula e ponto para realizar a soma dos valores.
             $sum += $sb;
         }
-        //return number_format($sum, 2, '', '');
         return $sum;
     }
 
@@ -152,7 +143,7 @@ class Util
      * @param String $str 
      * @param Int $pad_len
      * @param String $pad_str 
-     * @param $dir STR_PAD_RIGHT/STR_PAD_LEFT/STR_PAD_BOTH.
+     * @param STR_PAD_RIGHT/STR_PAD_LEFT/STR_PAD_BOTH.
      * @return String
      */
     public static function str_pad_unicode($str, $pad_len, $pad_str = ' ', $dir = STR_PAD_RIGHT){
@@ -165,7 +156,6 @@ class Util
         if (!$pad_len || !$pad_str_len || $pad_len <= $str_len) {
             return $str;
         }
-
         $result = null;
         if ($dir == STR_PAD_BOTH) {
             $length = ($pad_len - $str_len) / 2;

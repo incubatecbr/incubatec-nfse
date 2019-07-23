@@ -29,9 +29,8 @@ class Nota extends IncubaMain{
         //sql
         $sql = "INSERT INTO nota_fiscal(num_nota, cpf_cnpj_cliente, razao_social, inscricao_estadual, cod_consumidor_cliente, data_emissao_nf, ano_mes_apuracao, modelo, fase_utilizacao, cfop, situacao_doc, telefone_cliente, ind_tipo_cpf_cnpj, tipo_cliente, telefone_empresa, cnpj_emitente, valor_total_nf, data_remessa) VALUES('{$numNota}','{$data_c["cpf_cnpj"]}', '{$data_c["razao_social"]}', '{$data_c["inscricao_estadual"]}', '{$data_c["id"]}', '{$data["dt_emissao"]}', '{$data["ano_mes_apu"]}', '{$data["modelo"]}', '{$data["tipo_utilizacao"]}','{$data["cfop"]}', '{$data["situacao_doc"]}', '{$telC}', $ind_tipo_cpf_cnpj, '{$data["tipo_cliente"]}', '{$telE}', '{$cnpj_e}','{$vlrTotalNF}', '{$data_r}')";
         if($this->conn->query($sql) === TRUE) {
-            //INSERIR ITENS DA NOTA
             $last_id = $this->conn->insert_id;
-            $c_services = $this->newItemService($services, $last_id);
+            $c_services = $this->newItemService($services, $last_id);//INSERIR ITENS DA NOTA
             $ret = "Nota fiscal finalizada contendo {$c_services} serviço";
         }else{
             $ret = "Error {$this->conn->error}";
@@ -39,13 +38,20 @@ class Nota extends IncubaMain{
         $this->conn->close();//fecha conexao com db.
         return $ret;
     }
+    
 
+
+    /**
+     * Função responsavel por inserir os dados contidos no array.
+     * @param Array $array contendo os itens
+     * @param Int $last_id do ultimo id de nota inserida. 
+     */
     public function newItemService($array, $last_id){
         $c = 0;
         if(is_array($array[0])){
             for ($i=0; $i < count($array); $i++) {
                 $des = mb_strtoupper($array[$i][1]); 
-                $sql = "INSERT INTO item_nota(id_nota, cod_item, descricao, valor_item) VALUES($last_id,'{$array[$i][0]}','{$des}','{$array[$i][2]}')";
+                $sql = "INSERT INTO item_nota(id_nota, cod_item, descricao, valor_item, qnt_faturada) VALUES($last_id,'{$array[$i][0]}','{$des}','{$array[$i][2]}', '{$array[$i][4]}')";
                 if($this->conn->query($sql) === TRUE) {
                     $c++;
                 }else{
@@ -55,7 +61,7 @@ class Nota extends IncubaMain{
             }
         }else{
             $des = mb_strtoupper($array[1]); 
-            $sql = "INSERT INTO item_nota(id_nota, cod_item, descricao, valor_item) VALUES($last_id,'{$array[0]}','{$des}','{$array[2]}')";
+            $sql = "INSERT INTO item_nota(id_nota, cod_item, descricao, valor_item, qnt_faturada) VALUES($last_id,'{$array[0]}','{$des}','{$array[2]}', '{$array[4]}' )";
             if($this->conn->query($sql) === TRUE) {
                 $c++;
             }else{
@@ -113,8 +119,8 @@ class Nota extends IncubaMain{
     public function createIdenficacao(){
         global $APP_PATH; //para acessar a variavel global
         $enterprise = $this->_dataEnterprise();
-        $filepath = $APP_PATH['remessa'].'Identificacao.ini';
-        $file = fopen( $filepath, "w+") or die("Unable to open file!");
+        $filepath = $APP_PATH['remessa'].'Identificacao.ini';//caminho + nome do arquivo.
+        $file = fopen( $filepath, "w+") or die("Erro ao abrir!");
         $txt = "[IDENTIFICACAO]\nRAZAO SOCIAL={$enterprise['razao_social']}\nIE={$enterprise['inscricao_estadual']}\nCNPJ={$enterprise['cnpj']}\n[ENDERECO]\nENDERECO={$enterprise['endereco']} {$enterprise['numero']}\nBAIRRO={$enterprise['bairro']}\nMUNICIPIO={$enterprise['municipio']}\nCEP={$enterprise['cep']}\nUF={$enterprise['uf']}\n[RESPONSAVEL]\nNOME={$enterprise['nome_responsavel']}\nCARGO={$enterprise['cargo_responsavel']}\nTELEFONE={$enterprise['tel_responsavel']}\nEMAIL={$enterprise['email_responsavel']}";
         fwrite($file, $txt);
         fclose($file);
@@ -133,7 +139,7 @@ class Nota extends IncubaMain{
      */
     public function createFileName($uf, $cnpj, $modelo, $serie, $anoMes, $status, $tipo){
         global $APP_PATH; //para acessar a variavel global
-        $filepath = $APP_PATH['remessa']."$uf$cnpj$modelo$serie$anoMes$status"."01".$tipo.".001";
+        $filepath = $APP_PATH['remessa']."$uf$cnpj$modelo$serie$anoMes$status"."01".$tipo.".001";//nome do arquivo como descrito no convenio 115/03.
         $file = fopen( $filepath, "w+") or die("Não foi possivel abrir!");
         if(!$file)://verificação de segurança caso não tenha conseguido criar arquivo..
             echo "<script>alert('NAO FOI POSSIVEL CRIAR ARQUIVO -> {$tipo}')</script>";
@@ -272,9 +278,9 @@ class Nota extends IncubaMain{
             $cpf_cnpj = Util::str_pad_unicode($cliente['cpf_cnpj'], 14, '0', STR_PAD_LEFT);
             //$ie = Util::str_pad_unicode($cliente['inscricao_estadual'], 14);
             $rzs = Util::str_pad_unicode($cliente['razao_social'], 35);
-            $clas_con = '0';
-            $grp_ten = '00';
-            $cod_id_consu = Util::str_pad_unicode($cliente['id'], 12);
+            $clas_con = '0';//classe de consumo
+            $grp_ten = '00';//grupo de tensão
+            $cod_id_consu = Util::str_pad_unicode($cliente['id'], 12);//código de identificação do consumidor ou assinate
         
             $id = intval($notas[$i]['num_nota']);
             $itens = $this->getItensById($id);
@@ -284,28 +290,29 @@ class Nota extends IncubaMain{
                 $cod_item = Util::str_pad_unicode($val['cod_item'], 10);//codigo do item formatado com 10 caracteres
                 $des_item = Util::str_pad_unicode($val['descricao'], 40);//descrição do item formatada 40 caracteres
                 $unidade = Util::str_pad_unicode($val['tipo_uni_med'], 6);//tipo de medida do item
-                $valor_total_item = Util::str_pad_unicode($val['valor_item'], 11, '0', STR_PAD_LEFT);
-                $qntContr = '000000000000';
-                $qntMedi = '000000000000';
-                $desc = '00000000000';
-                $acres = '00000000000';
-                $bc_icms = $valor_total_item;
+                $valor_total_item = Util::str_pad_unicode($val['valor_item'], 11, '0', STR_PAD_LEFT);//valor total do item
+                $qntContr = '000000000000';//quantidade contratada
+                $qntMedi = '000000000000';//quantidade medida 
+                $desc = '00000000000';//descontos
+                $acres = '00000000000';//acrescimos
+                $bc_icms = $valor_total_item;//base de calculo de ICMS.
                 $icms = '00000000000';
-                $op_i = '00000000000';
-                $outros_v = '00000000000';
-                $aliq = '0000';
-                $num_contr = '               ';
-                $qntFatu = '000000001000';
-                $tarifa = '00000000000';
-                $ali_pis = '000000';
-                $pis_pas = '00000000000';
-                $aliq_c = '000000';
-                $cofins = '00000000000';
+                $op_i = '00000000000';//operações isentas
+                $outros_v = '00000000000';//outros valores
+                $aliq = '0000';//aliquota
+                $num_contr = '               ';//numero do contrato
+                //$qntFatu = '000000001000';
+                $qntFatu = Util::str_pad_unicode($val['qnt_faturada'], 12, '0', STR_PAD_LEFT);//quantidade fatura
+                $tarifa = '00000000000';//tarifa aplicada
+                $ali_pis = '000000';//aliquota PIS/PASEP
+                $pis_pas = '00000000000';//PIS/PASEP
+                $aliq_c = '000000';//aliquota cofins
+                $cofins = '00000000000';//cofins
 
                 $row = $cpf_cnpj.$cliente['uf'].$clas_con.$notas[$i]['fase_utilizacao'].$grp_ten.$notas[$i]['data_emissao_nf'].$notas[$i]['modelo'].$notas[$i]['serie'].$notas[$i]['num_nota'].$notas[$i]['cfop'].$num_ordem_item.$cod_item.$des_item.$notas[$i]['cfop'].$unidade.$qntContr.$qntMedi.$valor_total_item.$desc.$acres.$bc_icms.$icms.$op_i.$outros_v.$aliq.$notas[$i]['situacao_doc'].$notas[$i]['ano_mes_apuracao'].$num_contr.$qntFatu.$tarifa.$ali_pis.$pis_pas.$aliq_c.$cofins.' 00     ';
 
-                $cod_auth_dig = Util::generateMd5($row);
-                $rowCode = $row.$cod_auth_dig;
+                $cod_auth_dig = Util::generateMd5($row);//cod de autenticação digital do registro (CAMPO 38).
+                $rowCode = $row.$cod_auth_dig;//Linha + cod de autenticação digital.
                 $nRow = mb_convert_encoding($rowCode, "ISO-8859-1", "UTF-8");//linha convertida para ISO-8859-1
                 fwrite($fileOpen, $nRow.PHP_EOL);
             }
