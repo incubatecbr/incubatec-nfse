@@ -6,8 +6,8 @@ $(document).ready(function () {
     const titlePage = document.getElementById("title-page");
     //titlePage.innerHTML = 'Incuba NFe v1.0';
     //content.innerHTML = "<h1 class='text-center my-5'>Desenvolvido por Incubatec</h1>";
-    let pIndex = './views/'+'pagina-inicial.html';
-    $("#content").load(pIndex, function (response, status, xhr) {
+    let pagIndex = './views/'+'pagina-inicial.html';
+    $("#content").load(pagIndex, function (response, status, xhr) {
         if (status == "error") {//Se não encontrar pagina na pasta VIEW.
             var msg = "Desculpe, mas houve um erro: ";
             $("#content").html(msg + xhr.status + " " + xhr.statusText);
@@ -47,6 +47,7 @@ const estadosUF = [
     {"nome": "Sergipe", "sigla": "SE"},
     {"nome": "Tocantins", "sigla": "TO"}
 ];
+
 
 //click menu
 $("#menu li").click(function () {
@@ -90,7 +91,7 @@ $("#menu li").click(function () {
 /**
  * Função responsavel por formatar o valor passado com a expressão regular.
  */
-function formatData(event, keyRE) {
+function formatValue(event, keyRE) {
     if (	( typeof(event.keyCode) != 'undefined' && event.keyCode > 0 && String.fromCharCode(event.keyCode).search(keyRE) != (-1) ) || 
         ( typeof(event.charCode) != 'undefined' && event.charCode > 0 && String.fromCharCode(event.charCode).search(keyRE) != (-1) ) ||
         ( typeof(event.charCode) != 'undefined' && event.charCode != event.keyCode && typeof(event.keyCode) != 'undefined' && event.keyCode.toString().search(/^(8|9|13|45|46|35|36|37|39)$/) != (-1) ) ||
@@ -120,10 +121,4 @@ function dataTableFormated(array){
 
 function titlePage(name) {
     return name.replace('-', ' ');
-}
-
-function removePoints(string){
-    let regExp = /[\.,/()-]/g;
-    let ret = string.replace(regExp, "");
-    return ret;
 }

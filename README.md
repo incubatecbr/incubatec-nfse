@@ -9,7 +9,7 @@ Incuba NFSe é um projeto open source feito em PHP voltado para emissão nota fi
 
 ## Instalação
 
-Faça o download ou clone este repositório. Importe o banco de dados.
+Faça o download ou clone este repositório e importe o banco de dados. Leia atentamente as instruções de uso localizado no menu lateral.
 
 
 ### Configurações
@@ -27,6 +27,13 @@ Encontre a classe [Database.php](https://github.com/igorraphael/incubatec-nf/blo
     //nome da tabela.
     private $db = 'incubatec_nf';
 ```
+
+## Utilizado
+[Bootstrap](https://getbootstrap.com/)
+[jQuery-Confirm](https://craftpip.github.io/jquery-confirm/)
+[jQuery-Mask-Plugin](https://igorescobar.github.io/jQuery-Mask-Plugin/)
+[DataTables](https://datatables.net/)
+[API -> ViaCep](https://viacep.com.br/)
 
 ## Contribuição
 Pull requests são bem-vindos. Para mudanças importantes, por favor, abra um problema primeiro para discutir o que você gostaria de mudar.

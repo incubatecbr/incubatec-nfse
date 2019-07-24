@@ -1,34 +1,34 @@
 <form id="form-cliente">
     <div class="form-row">
         <div class="form-group col-6">
-            <label for="">Razão Social:</label>
+            <label>Razão Social:</label>
             <input type="text" class="form-control" id="rz" name="razao_social" maxlength="35">
         </div>
         <div class="form-group col-3">
-            <label for="">CPF/CNPJ:</label>
+            <label>CPF/CNPJ:</label>
             <input type="text" class="form-control" id="cpf_cnpj" name="cpf_cnpj">
         </div>
         <div class="form-group col-3">
-            <label for="">Inscrição Estadual:</label>
+            <label>Inscrição Estadual:</label>
             <input type="text" class="form-control" name="insc_estadual" maxlength="14">
         </div>
 
     </div>
     <div class="form-row">
         <div class="form-group col-5">
-            <label for="">Logradouro:</label>
+            <label>Logradouro:</label>
             <input type="text" class="form-control" id="endereco" name="endereco" maxlength="45">
         </div>
         <div class="form-group col-1">
-            <label for="">Nº:</label>
+            <label>Nº:</label>
             <input type="text" class="form-control" id="numero" name="numero" required maxlength="5">
         </div>
         <div class="form-group col-3">
-            <label for="">Complemento:</label>
+            <label>Complemento:</label>
             <input type="text" class="form-control" id="complemento" name="complemento" maxlength="15">
         </div>
         <div class="form-group col-3">
-            <label for="">Bairro:</label>
+            <label>Bairro:</label>
             <input type="text" class="form-control" id="bairro" name="bairro" maxlength="15">
         </div>
 
@@ -40,23 +40,23 @@
     <!-- spinner loader -->
     <div class="form-row">
         <div class="form-group col-2">
-            <label for="">CEP:</label>
+            <label>CEP:</label>
             <input type="text" class="form-control" id="cep" name="cep">
         </div>
         <div class="form-group col-2">
-            <label for="">Estado(UF):</label>
+            <label>Estado(UF):</label>
             <input type="text" class="form-control inp-disabled" id="uf" name="uf">
         </div>
         <div class="form-group col-3">
-            <label for="">Municipio:</label>
+            <label>Municipio:</label>
             <input type="text" class="form-control inp-disabled" id="municipio" name="municipio">
         </div>
         <div class="form-group col-2">
-            <label for="">Cód. Municipio IBGE:</label>
+            <label>Cód. Municipio IBGE:</label>
             <input type="text" class="form-control inp-disabled" id="cod_ibge_m" name="cod_municipio_ibge">
         </div>
         <div class="form-group col-3">
-            <label for="">Telefone:</label>
+            <label>Telefone:</label>
             <input type="text" class="form-control" id="tel_contato" name="tel_contato">
         </div>
     </div>
@@ -73,7 +73,6 @@
         let cep = $("#cep").val();
         if( cep == "" || cep.length < 9 ){
             $(this).addClass("inp-error");
-            //alert('digite o cep');
             $.alert({ type: 'red', title: 'Atenção!', content: 'CEP Inválido, informe um CEP valido!', });
         }else{
             $(this).removeClass("inp-error");
@@ -91,7 +90,6 @@
                     $("#municipio").val(data.localidade);
                     $("#uf").val(data.uf);
                     $("#cod_ibge_m").val(data.ibge);
-                    
                 }
             });
         }

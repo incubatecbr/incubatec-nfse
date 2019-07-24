@@ -25,7 +25,6 @@ class Nota extends IncubaMain{
         $telC = Util::replaceString($data_c["telefone"]);
         $telE = Util::replaceString($data_e["tel_responsavel"]);
         $dt_emissao = Util::replaceString($data["dt_emissao"]);
-        
         //sql
         $sql = "INSERT INTO nota_fiscal(num_nota, cpf_cnpj_cliente, razao_social, inscricao_estadual, cod_consumidor_cliente, data_emissao_nf, ano_mes_apuracao, modelo, fase_utilizacao, cfop, situacao_doc, telefone_cliente, ind_tipo_cpf_cnpj, tipo_cliente, telefone_empresa, cnpj_emitente, valor_total_nf, data_remessa) VALUES('{$numNota}','{$data_c["cpf_cnpj"]}', '{$data_c["razao_social"]}', '{$data_c["inscricao_estadual"]}', '{$data_c["id"]}', '{$data["dt_emissao"]}', '{$data["ano_mes_apu"]}', '{$data["modelo"]}', '{$data["tipo_utilizacao"]}','{$data["cfop"]}', '{$data["situacao_doc"]}', '{$telC}', $ind_tipo_cpf_cnpj, '{$data["tipo_cliente"]}', '{$telE}', '{$cnpj_e}','{$vlrTotalNF}', '{$data_r}')";
         if($this->conn->query($sql) === TRUE) {
@@ -154,7 +153,6 @@ class Nota extends IncubaMain{
      * @return void
      */
     public function generateRemessa(){
-
         Util::cleaningFolderRemessa();//Limpa pasta de remessa
         sleep(2);//aguardar 2 segundos para garantir que os arquivos foram apagados.
         $begin = $_POST['data']['ano'].'-'.$_POST['data']['mes'].'-01';
@@ -281,7 +279,6 @@ class Nota extends IncubaMain{
             $clas_con = '0';//classe de consumo
             $grp_ten = '00';//grupo de tensão
             $cod_id_consu = Util::str_pad_unicode($cliente['id'], 12);//código de identificação do consumidor ou assinate
-        
             $id = intval($notas[$i]['num_nota']);
             $itens = $this->getItensById($id);
         
@@ -308,9 +305,7 @@ class Nota extends IncubaMain{
                 $pis_pas = '00000000000';//PIS/PASEP
                 $aliq_c = '000000';//aliquota cofins
                 $cofins = '00000000000';//cofins
-
                 $row = $cpf_cnpj.$cliente['uf'].$clas_con.$notas[$i]['fase_utilizacao'].$grp_ten.$notas[$i]['data_emissao_nf'].$notas[$i]['modelo'].$notas[$i]['serie'].$notas[$i]['num_nota'].$notas[$i]['cfop'].$num_ordem_item.$cod_item.$des_item.$notas[$i]['cfop'].$unidade.$qntContr.$qntMedi.$valor_total_item.$desc.$acres.$bc_icms.$icms.$op_i.$outros_v.$aliq.$notas[$i]['situacao_doc'].$notas[$i]['ano_mes_apuracao'].$num_contr.$qntFatu.$tarifa.$ali_pis.$pis_pas.$aliq_c.$cofins.' 00     ';
-
                 $cod_auth_dig = Util::generateMd5($row);//cod de autenticação digital do registro (CAMPO 38).
                 $rowCode = $row.$cod_auth_dig;//Linha + cod de autenticação digital.
                 $nRow = mb_convert_encoding($rowCode, "ISO-8859-1", "UTF-8");//linha convertida para ISO-8859-1
@@ -334,12 +329,9 @@ class Nota extends IncubaMain{
             echo "<script>alert('NAO FOI POSSIVEL CRIAR ARQUIVO -> {$tipo}')</script>";
             die();
         endif;
-
-        
         for ($i=0; $i < count($notas); $i++) { 
             $cliente = $this->_dataCliente($notas[$i]['cod_consumidor_cliente']);  
             $cpf_ = Util::str_pad_unicode($cliente['cpf_cnpj'], 14, '0', STR_PAD_LEFT);
-            //$ie_ = Util::str_pad_unicode($cliente['inscricao_estadual'], 14);
             if($cliente['inscricao_estadual'] == 'ISENTO'){
                 $ie_ = Util::str_pad_unicode($cliente['inscricao_estadual'], 14);
             }else{
@@ -364,6 +356,11 @@ class Nota extends IncubaMain{
         return true;
     }
 
+    /**
+     * Função responsavel retornar a quantidade de itens de cada nota.
+     * @param Int $id_nota
+     * @return Int $itens['qt'] 
+     */
     public function getCountItensById($id_nota){
         if(!$id_nota)://debug.
             print_r("ID vazio.");
@@ -396,12 +393,17 @@ class Nota extends IncubaMain{
         }
     }
 
+    /**
+     * Função responsavel por trazer todos itens com base no id da nota fiscal.
+     * @param Int $id_nota
+     * @return Array $itens
+     */
     public function getItensById($id_nota){
         if(!$id_nota)://debug.
             print_r("ID vazio.");
             die();
         endif;
-        $sql = "SELECT cod_item, descricao, valor_item, tipo_uni_med FROM item_nota WHERE id_nota = {$id_nota}";
+        $sql = "SELECT cod_item, descricao, valor_item, qnt_faturada, tipo_uni_med FROM item_nota WHERE id_nota = {$id_nota}";
         $result = $this->conn->query($sql);
         if ($result->num_rows > 0) {
             $itens = mysqli_fetch_all ($result, MYSQLI_ASSOC);
@@ -411,12 +413,6 @@ class Nota extends IncubaMain{
         }
 
     }
-
-   
-
-
-
-
  
 }
 
