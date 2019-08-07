@@ -23,7 +23,7 @@ DROP TABLE IF EXISTS `clientes`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
  SET character_set_client = utf8mb4 ;
 CREATE TABLE `clientes` (
-  `id` int(12) unsigned zerofill NOT NULL AUTO_INCREMENT,
+  `id` int(12) unsigned NOT NULL AUTO_INCREMENT,
   `razao_social` varchar(35) NOT NULL,
   `cpf_cnpj` varchar(14) NOT NULL,
   `inscricao_estadual` varchar(14) NOT NULL,
@@ -38,7 +38,7 @@ CREATE TABLE `clientes` (
   `telefone` varchar(15) NOT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `id_UNIQUE` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -65,7 +65,7 @@ CREATE TABLE `empresa` (
   `tel_responsavel` varchar(15) NOT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `id_UNIQUE` (`id`)
-) ENGINE=MyISAM AUTO_INCREMENT=12 DEFAULT CHARSET=utf8;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -81,11 +81,12 @@ CREATE TABLE `item_nota` (
   `cod_item` varchar(10) NOT NULL,
   `descricao` varchar(40) NOT NULL,
   `valor_item` varchar(11) NOT NULL,
+  `qnt_faturada` varchar(12) NOT NULL,
   `tipo_uni_med` varchar(6) DEFAULT 'UN    ',
   PRIMARY KEY (`id_item_nota`),
   KEY `fk_id_nota` (`id_nota`),
   CONSTRAINT `fk_id_nota` FOREIGN KEY (`id_nota`) REFERENCES `nota_fiscal` (`id_nota`)
-) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -106,10 +107,11 @@ CREATE TABLE `nota_fiscal` (
   `ano_mes_apuracao` varchar(4) NOT NULL,
   `modelo` varchar(2) NOT NULL,
   `serie` varchar(3) GENERATED ALWAYS AS ('001') VIRTUAL,
+  `fase_utilizacao` varchar(1) NOT NULL,
   `cfop` varchar(4) NOT NULL,
   `situacao_doc` varchar(1) NOT NULL,
   `telefone_cliente` varchar(12) DEFAULT NULL,
-  `ind_tipo_cpf_cnpj` varchar(1) DEFAULT NULL,
+  `ind_tipo_cpf_cnpj` varchar(1) NOT NULL,
   `tipo_cliente` varchar(2) NOT NULL,
   `telefone_empresa` varchar(12) DEFAULT NULL,
   `cnpj_emitente` varchar(14) NOT NULL,
@@ -117,7 +119,7 @@ CREATE TABLE `nota_fiscal` (
   `data_remessa` date DEFAULT NULL,
   PRIMARY KEY (`id_nota`),
   UNIQUE KEY `num_nota_UNIQUE` (`num_nota`)
-) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 
@@ -129,4 +131,4 @@ CREATE TABLE `nota_fiscal` (
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2019-07-16 16:16:56
+-- Dump completed on 2019-08-07  8:49:26
